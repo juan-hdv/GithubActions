@@ -20,4 +20,5 @@ jobs:
       run: |
         echo "***** $pr_body ***** $mensaje"
         ./format.sh
+        echo "***** $formatted_body *****"
       shell: bash
