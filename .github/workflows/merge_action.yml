@@ -4,7 +4,7 @@ on:
     types:
       - closed
     branches:
-      - 'Formating-PR-Body'
+      - 'main'
 
 env:
   PR_BODY: ${{ github.event.pull_request.body}}
