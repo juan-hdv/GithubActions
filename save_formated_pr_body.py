@@ -9,7 +9,7 @@ _PATTERN_GITHUB_URL = "\[#\d+?\]\(https\:\/\/github\.com\/NomadHealth.+?\)" # no
 
 
 def error(msg=None):
-    msg = f" > msg" if msg else ""
+    msg = f" > {msg}" if msg else ""
     return "Formatting Error:: PR body format not recognized!" + msg
 
 
@@ -51,7 +51,7 @@ def format_body(body: str) -> str:
     # Get the text with the list of PRs
     match = re.match(r"^\s*# Changes(.+):robot: auto generated pull request(.+)$", body, re.DOTALL) # noqa
     if not match:
-        return error("NOT found: robot: auto generated pull request")
+        return error(f"NOT found: robot: auto generated pull request. body={body}")
 
     result = match.group(1)
     jira_urls_list = match.group(2).replace(" ", "").split("\n")
@@ -60,7 +60,7 @@ def format_body(body: str) -> str:
     # Get each of the PR's info
     pr_matches = re.findall(rf"\s*(-\s{_PATTERN_USER}.*?{_PATTERN_GITHUB_URL})\n?", result, re.DOTALL)  # noqa
     if not pr_matches:
-        return error("PR Partterns not found")
+        return error(f"PR Partterns not found body={body}")
 
     date_obj = datetime.now(timezone.utc)
     date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
@@ -80,7 +80,6 @@ def format_body(body: str) -> str:
         pr_github_url = match.group(4) or ""
         pr_jira_link = get_pr_jira_link(pr_jira_code, jira_urls_list)
 
-        #pr_jira_code = pr_jira_code.replace(pr_jira_code, f"[{pr_jira_code}]({pr_jira_link})") # noqa
         result_string += f"- [{pr_jira_code}]({pr_jira_link}) {description} {owner} {pr_github_url}\n\n"  # noqa
 
     return result_string
@@ -89,6 +88,6 @@ def format_body(body: str) -> str:
 if __name__ == '__main__':
     body = sys.argv[1]
     if not body:
-        print(error(f"Body: {body}"))
+        print(error(f" body={body}"))
     else:
         print(format_body(body))
