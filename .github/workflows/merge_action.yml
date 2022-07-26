@@ -14,5 +14,4 @@ jobs:
     - name: Run script
       run: |
         ls -l
-        ./format.sh
       shell: bash
