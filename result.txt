@@ -1,4 +1,4 @@
-There was a Production deployment on 07/26/2022 at 20:47 (UTC). It contained the following tickets:
+There was a Production deployment on 07/26/2022 at 21:48 (UTC). It contained the following tickets:
 
 Jira Code | Description | Owner | Github Url
 ---------   -----------   -----   ----------
