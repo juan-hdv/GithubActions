@@ -4,6 +4,11 @@ on:
     branches:
       - 'Formating-PR-Body'
 
+env:
+  PR_BODY: ${{ github.event.pull_request.body}}
+  FORMATTED_BODY: ""
+  MSG: "-HOLA-"
+
 jobs:
   testing_scripts:
     runs-on: ubuntu-latest
@@ -14,11 +19,9 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v3
     - name: Run script
-      env:
-        pr_body: ${{ github.event.pull_request.body}}
-        mensaje: "-HOLA-"
       run: |
-        echo "***** $pr_body ***** $mensaje"
+        echo "***** $PR_BODY ***** $MSG"
         ./format.sh
-        echo "+++++ $formatted_body +++++"
+        echo "+++++1 $FORMATTED_BODY"
+        echo "+++++2 ${{ env.FORMATTED_BODY }}"
       shell: bash
