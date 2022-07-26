@@ -15,7 +15,7 @@ jobs:
   promoted_to_prod:
     if: |
       (
-      github.event.pull_request.merged == true &&
+      github.event.pull_request.merged == true
       )
     runs-on: ubuntu-latest
     steps:
