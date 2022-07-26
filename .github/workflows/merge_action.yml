@@ -16,7 +16,8 @@ jobs:
     - name: Run script
       env:
         pr_body: ${{ github.event.pull_request.body}}
+        mensaje: "-HOLA-"
       run: |
-        echo "***** $pr_body *****"
+        echo "***** $pr_body ***** $mensaje"
         ./format.sh
       shell: bash
