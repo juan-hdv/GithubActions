@@ -8,18 +8,10 @@ jobs:
   testing_scripts:
     runs-on: ubuntu-latest
     steps:
-    - name: Commit
+    - name: Log step
       run: |
         echo The PR was merged: ${{ github.event.pull_request.title }}
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: githubchangelog
-        SLACK_TITLE: ${{ github.event.pull_request.title}}
-        SLACK_MESSAGE: |
-          There was a Production deployment. It contained the following tickets:
-
-          Jira Code | Description | Owner | Github Url
-          --------------------------------------------------
-          ${{ github.event.pull_request.body}}
+    - name: Run script
+      run: |
+        ./format.sh
+      shell: bash
