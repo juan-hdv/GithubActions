@@ -1,6 +1,8 @@
 name: Test of script
 on:
-  push:
+  pull_request_target:
+    types:
+      - closed
     branches:
       - 'Formating-PR-Body'
 
@@ -10,7 +12,11 @@ env:
   MSG: "-HOLA-"
 
 jobs:
-  testing_scripts:
+  promoted_to_prod:
+    if: |
+      (
+      github.event.pull_request.merged == true &&
+      )
     runs-on: ubuntu-latest
     steps:
     - name: Log step
