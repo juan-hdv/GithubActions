@@ -24,8 +24,6 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v3
     - name: Run script
-      env:
-        FORMATTED_BODY: ""
       run: |
         echo "***** $PR_BODY ***** $MSG"
         ./format.sh
