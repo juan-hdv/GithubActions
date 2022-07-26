@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import re
 
 
+_ERROR_BAD_FORMAT = "Error: PR body format not recognized!"
 _PATTERN_USER = "@\w+"  # noqa #605
 _PATTERN_JIRA_CODE = "\[([a-zA-Z]+-[0-9]+)\]"  # noqa #605
 _PATTERN_GITHUB_URL = "\[#\d+?\]\(https\:\/\/github\.com\/NomadHealth.+?\)" # noqa #605
@@ -45,12 +46,17 @@ def format_body(body: str) -> str:
 
     # Get the text with the list of PRs
     match = re.match(r"^\s*# Changes(.+):robot: auto generated pull request(.+)$", body, re.DOTALL) # noqa
+    if not match:
+        return _ERROR_BAD_FORMAT
+
     result = match.group(1)
     jira_urls_list = match.group(2).replace(" ", "").split("\n")
     jira_urls_list = [x for x in jira_urls_list if x.strip() not in ["\n",""]]
 
     # Get each of the PR info
     pr_matches = re.findall(rf"\s*(-\s{_PATTERN_USER}.*?{_PATTERN_GITHUB_URL})\n?", result, re.DOTALL)  # noqa
+    if not pr_matches:
+        return _ERROR_BAD_FORMAT
 
     date_obj = datetime.now(timezone.utc)
     date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
@@ -77,18 +83,5 @@ def format_body(body: str) -> str:
 
 
 if __name__ == '__main__':
-    # body = """
-    # # Changes
-    # - @qianshi508 Create draft job crated and updated signal for ML inference [#11234](https://github.com/NomadHealth/nomad-flask/pull/11234)
-    # - @AgustinJimenezBDev [CXJD-147] Add more params to application completed tracking event [#11231](https://github.com/NomadHealth/nomad-flask/pull/11231)
-    # - @AgustinJimenezBDev [CXJD-149] - Add more parameters to job viewed tracking event [#11241](https://github.com/NomadHealth/nomad-flask/pull/11241)
-
-    # :robot: auto generated pull request
-
-
-    # [CXJD-147]: https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-    # [CXJD-149]: https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-    # """
-
     body = sys.argv[1]
     print(format_body(body))
