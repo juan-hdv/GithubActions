@@ -9,7 +9,7 @@ _PATTERN_GITHUB_URL = "\[#\d+?\]\(https\:\/\/github\.com\/NomadHealth.+?\)" # no
 
 
 def error(msg=None):
-    msg = f" > {msg}" if msg else ""
+    msg = f" {msg}" if msg else ""
     return "Formatting Error:: PR body format not recognized!" + msg
 
 
@@ -88,6 +88,6 @@ def format_body(body: str) -> str:
 if __name__ == '__main__':
     body = sys.argv[1]
     if not body:
-        print(error(f" body={body}"))
+        print(error(f"At the beggining - body={body}"))
     else:
         print(format_body(body))
