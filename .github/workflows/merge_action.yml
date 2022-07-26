@@ -13,5 +13,5 @@ jobs:
         echo The PR was merged: ${{ github.event.pull_request.title }}
     - name: Run script
       run: |
-        ./workflows/format.sh
+        .github/workflows/format.sh
       shell: bash
