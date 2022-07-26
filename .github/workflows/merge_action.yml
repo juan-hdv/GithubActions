@@ -1,4 +1,4 @@
-name: Promotion dev1->prod1 Slack notification
+name: Promotion dev1->prod1 Slack notification Test
 on:
   pull_request_target:
     types:
