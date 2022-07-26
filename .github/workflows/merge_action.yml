@@ -2,7 +2,7 @@ name: Test of script
 on:
   push:
     branches:
-      - 'main'
+      - 'Formating-PR-Body'
 
 jobs:
   promoted_to_prod:
