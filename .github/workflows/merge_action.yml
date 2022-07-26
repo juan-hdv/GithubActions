@@ -27,5 +27,5 @@ jobs:
       run: |
         echo "***** $PR_BODY ***** $MSG"
         ./format.sh
-        echo "+++++1 $GITHUB_ENV"
+        echo "+++++1 $FORMATTED_BODY"
       shell: bash
