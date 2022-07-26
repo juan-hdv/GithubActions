@@ -17,8 +17,6 @@ jobs:
       env:
         pr_body: ${{ github.event.pull_request.body}}
       run: |
-        echo --------------
-        echo $pr_body
-        echo --------------
+        echo "***** $pr_body *****"
         ./format.sh
       shell: bash
