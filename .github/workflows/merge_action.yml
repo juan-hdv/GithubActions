@@ -11,6 +11,8 @@ jobs:
     - name: Log step
       run: |
         echo The PR was merged: ${{ github.event.pull_request.title }}
+    - name: Checkout source code
+      uses: actions/checkout@v3
     - name: Run script
       run: |
         ./format.sh
