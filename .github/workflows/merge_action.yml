@@ -5,7 +5,7 @@ on:
       - 'Formating-PR-Body'
 
 jobs:
-  promoted_to_prod:
+  testing_scripts:
     runs-on: ubuntu-latest
     steps:
     - name: Commit
