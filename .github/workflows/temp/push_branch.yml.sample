@@ -1,0 +1,15 @@
+name: Push branch
+
+on:
+  push:
+    branches:
+      - 'test-branch'
+
+jobs:
+  pushed:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Echo messages 
+      run: |
+        echo The Branch was pushed
+        echo "End"
