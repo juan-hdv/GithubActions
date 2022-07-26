@@ -16,7 +16,7 @@ jobs:
       (
       github.event.pull_request.merged == true
       )
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Log step
       run: |
@@ -27,6 +27,5 @@ jobs:
       run: |
         echo "***** $PR_BODY ***** $MSG"
         ./format.sh
-        echo "+++++1 $FORMATTED_BODY"
-        echo "+++++2 ${{ env.FORMATTED_BODY }}"
+        echo "+++++1 $GITHUB_ENV"
       shell: bash
