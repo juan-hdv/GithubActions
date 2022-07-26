@@ -16,9 +16,13 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-    - name: PR Merged
+    - name: PR merged to Prod
       run: |
         echo The PR was merged: ${{ github.event.pull_request.title }}"
+    - name: Format PR body
+      run: |
+        ./format.sh
+      shell: bash
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
