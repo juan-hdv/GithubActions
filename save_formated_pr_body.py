@@ -88,6 +88,6 @@ def format_body(body: str) -> str:
 if __name__ == '__main__':
     body = sys.argv[1]
     if not body:
-        print(error(f"At the beginning - body={body}"))
+        print(error(f"At the beginning- body={body}"))
     else:
         print(format_body(body))
