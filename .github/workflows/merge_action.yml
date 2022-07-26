@@ -4,24 +4,30 @@ on:
     types:
       - closed
     branches:
-      - 'main'
+      - 'Formating-PR-Body'
+
+env:
+  PR_BODY: ${{ github.event.pull_request.body}}
+  FORMATTED_BODY: ""
+  MSG: "-HOLA-"
 
 jobs:
   promoted_to_prod:
+    if: |
+      (
+      github.event.pull_request.merged == true &&
+      )
     runs-on: ubuntu-latest
     steps:
-    - name: Commit
+    - name: Log step
       run: |
         echo The PR was merged: ${{ github.event.pull_request.title }}
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: githubchangelog
-        SLACK_TITLE: ${{ github.event.pull_request.title}}
-        SLACK_MESSAGE: |
-          There was a Production deployment. It contained the following tickets:
-
-          Jira Code | Description | Owner | Github Url
-          --------------------------------------------------
-          ${{ github.event.pull_request.body}}
+    - name: Checkout source code
+      uses: actions/checkout@v3
+    - name: Run script
+      run: |
+        echo "***** $PR_BODY ***** $MSG"
+        ./format.sh
+        echo "+++++1 $FORMATTED_BODY"
+        echo "+++++2 ${{ env.FORMATTED_BODY }}"
+      shell: bash
