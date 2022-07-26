@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 import re
 
 
@@ -20,7 +20,7 @@ def get_pr_jira_link(pr_jira_code, jira_urls_list):
     return result
 
 
-def format_body(body: str, timestamp) -> str:
+def format_body(body: str) -> str:
     """
     Returns a promotion body formated
 
@@ -52,10 +52,10 @@ def format_body(body: str, timestamp) -> str:
     # Get each of the PR info
     pr_matches = re.findall(rf"\s*(-\s{_PATTERN_USER}.*?{_PATTERN_GITHUB_URL})\n?", result, re.DOTALL)  # noqa
 
-    date_obj = datetime.fromtimestamp(timestamp)
-    date_str = date_obj.strftime("%m/%d/%Y at %H:%M:%S")
+    date_obj = datetime.now(timezone.utc)
+    date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
     result_string = (
-        f"There was a Production deployment on {date_str}. It contained the following tickets:\n\n"
+        f"There was a Production deployment on {date_str} (UTC). It contained the following tickets:\n\n"  # noqa
         f"Jira Code | Description | Owner | Github Url\n"
         f"---------   -----------   -----   ----------\n"
     )
@@ -77,19 +77,18 @@ def format_body(body: str, timestamp) -> str:
 
 
 if __name__ == '__main__':
-    #body = sys.argv[1]
-    body = """
-    # Changes
-    - @qianshi508 Create draft job crated and updated signal for ML inference [#11234](https://github.com/NomadHealth/nomad-flask/pull/11234)
-    - @AgustinJimenezBDev [CXJD-147] Add more params to application completed tracking event [#11231](https://github.com/NomadHealth/nomad-flask/pull/11231)
-    - @AgustinJimenezBDev [CXJD-149] - Add more parameters to job viewed tracking event [#11241](https://github.com/NomadHealth/nomad-flask/pull/11241)
+    # body = """
+    # # Changes
+    # - @qianshi508 Create draft job crated and updated signal for ML inference [#11234](https://github.com/NomadHealth/nomad-flask/pull/11234)
+    # - @AgustinJimenezBDev [CXJD-147] Add more params to application completed tracking event [#11231](https://github.com/NomadHealth/nomad-flask/pull/11231)
+    # - @AgustinJimenezBDev [CXJD-149] - Add more parameters to job viewed tracking event [#11241](https://github.com/NomadHealth/nomad-flask/pull/11241)
 
-    :robot: auto generated pull request
+    # :robot: auto generated pull request
 
 
-    [CXJD-147]: https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-    [CXJD-149]: https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-    """
+    # [CXJD-147]: https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+    # [CXJD-149]: https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+    # """
 
-    timestamp = 1658201517
-    print(format_body(body, timestamp))
+    body = sys.argv[1]
+    print(format_body(body))
