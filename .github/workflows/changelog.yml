@@ -9,16 +9,18 @@ jobs:
   promoted_to_prod:
     if: |
       (
-      github.event.pull_request.merged == true
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.labels.*.name, 'promote') &&
+      contains(github.event.pull_request.labels.*.name, 'dev1→prod1')
       )
     runs-on: ubuntu-latest
     steps:
-    - name: Log step
+    - name: PR Log title
       run: |
         echo "New promotion: ${{ github.event.pull_request.title }}"
     - name: Checkout source code
       uses: actions/checkout@v3
-    - name: Run script
+    - name: PR Format body
       working-directory: .github/workflows/changelog/
       # Multiline strings tip from: https://trstringer.com/github-actions-multiline-strings/
       run: |
@@ -28,7 +30,7 @@ jobs:
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV        
       shell: bash
-    - name: Slack Notification
+    - name: Slack Notify
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: changelog
