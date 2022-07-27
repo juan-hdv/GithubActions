@@ -31,8 +31,11 @@ jobs:
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
+        SLACK_CHANNEL: changelog
+        SLACK_USERNAME: 'ghActionsBot'
+        SLACK_ICON_EMOJI: ':github:'
+        SLACK_COLOR: '#90DBA4'
+        SLACK_TITLE: Changelog notification for a Nomad software promotion
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: githubchangelog
-        SLACK_TITLE: ${{ github.event.pull_request.title}}
         SLACK_MESSAGE: |
           ${{ env.PR_FORMATTED_BODY }}
