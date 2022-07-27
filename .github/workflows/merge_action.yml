@@ -19,7 +19,7 @@ jobs:
     steps:
     - name: Log step
       run: |
-        echo "New promotion: ${{ github.event.pull_request.title }}""
+        echo "New promotion: ${{ github.event.pull_request.title }}"
     - name: Checkout source code
       uses: actions/checkout@v3
     - name: Run script
@@ -29,5 +29,5 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        echo "*** ${{ github.event.pull_request.title }} ***""
-        echo "${{ env.PR_FORMATTED_BODY }}""
+        echo "*** ${{ github.event.pull_request.title }} ***"
+        echo "${{ env.PR_FORMATTED_BODY }}"
