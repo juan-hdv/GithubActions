@@ -27,7 +27,7 @@ jobs:
       id: run_script
       working-directory: ./
       run: |
-        python3 save_formated_pr_body.py "${{ github.event.pull_request.body}}"> result.txt
+        python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}"> result.txt
         PR_FORMATTED_BODY=$(cat ./result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
@@ -35,4 +35,4 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        echo ${{ env.PR_FORMATTED_BODY }}
+        echo "${{ env.PR_FORMATTED_BODY }}""
