@@ -8,7 +8,6 @@ on:
 
 env:
   PR_BODY: ${{ github.event.pull_request.body}}
-  MSG: "-HOLA-"
   PR_FORMATTED_BODY: ""
 
 jobs:
@@ -29,8 +28,9 @@ jobs:
         python3 save_formated_pr_body.py "$PR_BODY">> result.txt
         echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
       shell: bash
-    - name: Print results 
+    - name: Print results
       run: |
+        echo *** ${{ github.event.pull_request.title }} ***
         echo ${{ env.PR_FORMATTED_BODY }}
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
