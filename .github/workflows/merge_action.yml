@@ -12,8 +12,6 @@ jobs:
       github.event.pull_request.merged == true
       )
     runs-on: ubuntu-latest
-    env:
-      PR_BODY: ${{ github.event.pull_request.body}}
     steps:
     - name: Log step
       run: |
@@ -28,8 +26,8 @@ jobs:
       working-directory: ./
       run: |
         python3 save_formated_pr_body.py "${{ github.event.pull_request.body}}"> result.txt
-        echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
       shell: bash
     - name: Print results
       run: |
-        echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
+        PR_FORMATTED_BODY::$(cat ./result.txt)
+        echo "$PR_FORMATTED_BODY"
