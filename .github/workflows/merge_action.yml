@@ -31,3 +31,11 @@ jobs:
         echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
         echo env.PR_FORMATTED_BODY
       shell: bash
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: githubchangelog
+        SLACK_TITLE: ${{ github.event.pull_request.title}}
+        SLACK_MESSAGE: |
+          ${{ env.PR_FORMATTED_BODY}}
