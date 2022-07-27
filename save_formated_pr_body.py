@@ -13,8 +13,8 @@ class Formatter:
 
     def error(self, comment=None):
         msg = "Formatting Error:: PR body format not recognized!"
-        msg += f" {comment if comment else ''}"
-        msg += f"\n\n{self.body}"
+        msg = f"{msg} {comment if comment else ''}"
+        msg = f"[{msg}]\n\n{self.body}"
 
         return msg
 
