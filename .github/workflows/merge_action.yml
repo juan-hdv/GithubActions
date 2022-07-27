@@ -9,6 +9,7 @@ on:
 env:
   PR_BODY: ${{ github.event.pull_request.body}}
   MSG: "-HOLA-"
+  PR_FORMATTED_BODY: ""
 
 jobs:
   promoted_to_prod:
@@ -27,5 +28,6 @@ jobs:
       run: |
         echo "***** $PR_BODY ***** $MSG"
         ./format.sh
-        echo "+++++1 $FORMATTED_BODY"
+        echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
+        echo env.PR_FORMATTED_BODY
       shell: bash
