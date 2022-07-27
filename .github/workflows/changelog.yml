@@ -18,15 +18,9 @@ jobs:
         echo "New promotion: ${{ github.event.pull_request.title }}"
     - name: Checkout source code
       uses: actions/checkout@v3
-      # with:
-      #   repository: NomadHealth/nomad-env
-      #   ref: Master
-      #  echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
-      #  echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
     - name: Run script
-      id: run_script
-      working-directory: ./
-      # Multiline striungs from: https://trstringer.com/github-actions-multiline-strings/
+      working-directory: ./changelog
+      # Multiline strings tip from: https://trstringer.com/github-actions-multiline-strings/
       run: |
         python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}"> result.txt
         PR_FORMATTED_BODY=$(cat ./result.txt)
@@ -34,9 +28,6 @@ jobs:
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV        
       shell: bash
-    - name: Print results
-      run: |
-        echo "${{ env.PR_FORMATTED_BODY }}"
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
