@@ -26,6 +26,7 @@ jobs:
     - name: Run script
       id: run_script
       working-directory: ./
+      # Multiline striungs from: https://trstringer.com/github-actions-multiline-strings/
       run: |
         python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}"> result.txt
         PR_FORMATTED_BODY=$(cat ./result.txt)

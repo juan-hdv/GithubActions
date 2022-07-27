@@ -56,6 +56,8 @@ class Formatter:
         if not self.body:
             self.error("Starting formatting... ")
 
+        self.body.replace("\r", "\n")
+
         # Get the text with the list of PRs
         match = re.match(r"^\s*# Changes(.+):robot: auto generated pull request(.+)$", self.body, re.DOTALL) # noqa
         if not match:
@@ -65,7 +67,7 @@ class Formatter:
         jira_urls_list = (
             match.group(2).replace(" ", "").replace("`", "").split("\n")
         )
-        jira_urls_list = [x for x in jira_urls_list if x.strip("\n\r ") not in ["\n", ""]]  # noqa
+        jira_urls_list = [x for x in jira_urls_list if x.strip("\n ") not in ["\n", ""]]  # noqa
 
         # Get each of the PR's info
         pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?\[{self.PATTERN_GITHUB_CODE}\]{self.PATTERN_GITHUB_URL})\n?", result, re.DOTALL)  # noqa
@@ -97,7 +99,7 @@ class Formatter:
             pr_github_code = match.group(4) or "Unknown"
 
             pr_github_url = match.group(5) or self.URL_UNKNOWN
-            pr_github_url = pr_github_url.strip(")(\n\r ")
+            pr_github_url = pr_github_url.strip(")(\n ")
 
             pr_jira_url = self.get_pr_jira_url(pr_jira_code, jira_urls_list)
 
