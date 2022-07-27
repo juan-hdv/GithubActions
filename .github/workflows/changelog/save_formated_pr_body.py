@@ -78,7 +78,7 @@ class Formatter:
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
         result_string = (
-            f"*There was a Production deployment on {date_str} (UTC), containing the following tickets:*\n\n"  # noqa
+            f"There was a Production deployment on {date_str} (UTC), containing the following tickets:\n\n"  # noqa
             # f"Jira Code | Description | @ Owner | Github Url\n"
             # f"---------   -----------   -------   ----------\n"
         )
