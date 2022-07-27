@@ -34,4 +34,4 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        echo "PREFORMATTED: env.PR_FORMATTED_BODY"
+        echo "PREFORMATTED: ${{ env.PR_FORMATTED_BODY }}"
