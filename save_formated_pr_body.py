@@ -68,7 +68,7 @@ class Formatter:
         jira_urls_list = (
             match.group(2).replace(" ", "").replace("`", "").split("\n")
         )
-        jira_urls_list = [x for x in jira_urls_list if x.strip("\n ") not in ["\n", ""]]  # noqa
+        jira_urls_list = [x.rstrip() for x in jira_urls_list if len(x.strip("\n ")) > 0]  # noqa
 
         # Get each of the PR's info
         pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?\[{self.PATTERN_GITHUB_CODE}\]{self.PATTERN_GITHUB_URL})\n?", result, re.DOTALL)  # noqa
