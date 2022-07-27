@@ -18,7 +18,7 @@ jobs:
     steps:
     - name: PR merged to Prod
       run: |
-        echo The PR was merged: ${{ github.event.pull_request.title }}"
+        echo The PR was merged: ${{ github.event.pull_request.title }}
     - name: Format PR body
       run: |
         ./format.sh
