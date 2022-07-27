@@ -32,6 +32,4 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        echo "steps.run_script.outputs.PR_FORMATTED_BODY: ${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
-        echo "PR_FORMATTED_BODY: $PR_FORMATTED_BODY"
-        echo "TITLE: ${{ github.event.pull_request.title }}"
+        echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
