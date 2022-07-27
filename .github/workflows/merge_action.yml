@@ -35,4 +35,4 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        echo "${{ env.PR_FORMATTED_BODY }}""
+        echo "${{ env.PR_FORMATTED_BODY }}"
