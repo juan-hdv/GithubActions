@@ -107,18 +107,6 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    # body = sys.argv[1]
-    body = """
-# Changes
-- @stevenbellnomad [SAR-1137] Typo fix [#11323](https://github.com/NomadHealth/nomad-flask/pull/11323)
-- @jeancalderon-nomadhealth Fix vaccine records sync [#11322](https://github.com/NomadHealth/nomad-flask/pull/11322)
-- @tinawang01 [SAR-1137] Adding promoted jobs in job digest [#11290](https://github.com/NomadHealth/nomad-flask/pull/11290)
-
-:robot: auto generated pull request
-
-
-[SAR-1137]: https://nomadhealth.atlassian.net/browse/SAR-1137?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-[SAR-1137]: https://nomadhealth.atlassian.net/browse/SAR-1137?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ    
-"""
+    body = sys.argv[1]
     fmt = Formatter(body)
     print(fmt.format_body())
