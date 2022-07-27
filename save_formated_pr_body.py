@@ -97,16 +97,28 @@ class Formatter:
             pr_github_code = match.group(4) or "Unknown"
 
             pr_github_url = match.group(5) or self.URL_UNKNOWN
-            pr_github_url = pr_github_url.strip(")(")
+            pr_github_url = pr_github_url.strip(")(\n ")
 
             pr_jira_url = self.get_pr_jira_url(pr_jira_code, jira_urls_list)
 
-            result_string += f"* <{pr_jira_url}|[{pr_jira_code}]> {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n\n"  # noqa
+            result_string += f"* <{pr_jira_url}|[{pr_jira_code}]> {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"  # noqa
 
         return result_string
 
 
 if __name__ == '__main__':
-    body = sys.argv[1]
+    # body = sys.argv[1]
+    body = """
+# Changes
+- @stevenbellnomad [SAR-1137] Typo fix [#11323](https://github.com/NomadHealth/nomad-flask/pull/11323)
+- @jeancalderon-nomadhealth Fix vaccine records sync [#11322](https://github.com/NomadHealth/nomad-flask/pull/11322)
+- @tinawang01 [SAR-1137] Adding promoted jobs in job digest [#11290](https://github.com/NomadHealth/nomad-flask/pull/11290)
+
+:robot: auto generated pull request
+
+
+[SAR-1137]: https://nomadhealth.atlassian.net/browse/SAR-1137?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+[SAR-1137]: https://nomadhealth.atlassian.net/browse/SAR-1137?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ    
+"""
     fmt = Formatter(body)
     print(fmt.format_body())
