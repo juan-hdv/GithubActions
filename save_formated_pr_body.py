@@ -75,7 +75,7 @@ class Formatter:
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
         result_string = (
-            f"### There was a Production deployment on {date_str} (UTC). It contained the following tickets:\n\n"  # noqa
+            f"*There was a Production deployment on {date_str} (UTC). It contained the following tickets:*\n\n"  # noqa
             # f"Jira Code | Description | @ Owner | Github Url\n"
             # f"---------   -----------   -------   ----------\n"
         )
@@ -101,7 +101,7 @@ class Formatter:
 
             pr_jira_url = self.get_pr_jira_url(pr_jira_code, jira_urls_list)
 
-            result_string += f"* <{pr_jira_url}|[{pr_jira_code}]> {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"  # noqa
+            result_string += f"• <{pr_jira_url}|[{pr_jira_code}]> {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"  # noqa
 
         return result_string
 
