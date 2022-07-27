@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PR_BODY: ${{ github.event.pull_request.body}}
-      PR_FORMATTED_BODY: ""
     steps:
     - name: Log step
       run: |
