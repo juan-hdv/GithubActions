@@ -21,16 +21,18 @@ jobs:
       # with:
       #   repository: NomadHealth/nomad-env
       #   ref: Master
+      #  echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
+      #  echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
     - name: Run script
+      id: run_script
       working-directory: ./
       run: |
         python3 save_formated_pr_body.py "${{ github.event.pull_request.body}}"> result.txt
+        PR_FORMATTED_BODY::$(cat ./result.txt)
+        echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
+        echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV        
       shell: bash
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: githubchangelog
-        SLACK_TITLE: ${{ github.event.pull_request.title}}
-        SLACK_MESSAGE: |
-          $(cat ./result.txt)
+    - name: Print results
+      run: |
+        echo ${{ env.PR_FORMATTED_BODY }}
