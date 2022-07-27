@@ -23,15 +23,13 @@ jobs:
       # with:
       #   repository: NomadHealth/nomad-env
       #   ref: Master
-      #  echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
-      # echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
-      # working-directory: ./
     - name: Run script
       id: run_script
+      working-directory: ./
       run: |
-        python3 save_formated_pr_body.py "$PR_BODY"> result.txt
-        echo "PR_FORMATTED_BODY=$(cat ./result.txt)" >> $GITHUB_ENV
+        python3 save_formated_pr_body.py "${{ github.event.pull_request.body}}"> result.txt
+        echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
       shell: bash
     - name: Print results
       run: |
-        echo "PREFORMATTED: ${{ env.PR_FORMATTED_BODY }}"
+        echo "${{ steps.run_script.outputs.PR_FORMATTED_BODY }}"
