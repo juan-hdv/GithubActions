@@ -21,16 +21,17 @@ jobs:
     steps:
     - name: Log step
       run: |
-        echo The PR was merged: ${{ github.event.pull_request.title }}
+        echo New promotion: ${{ github.event.pull_request.title }}
     - name: Checkout source code
       uses: actions/checkout@v3
     - name: Run script
       run: |
-        echo "***** $PR_BODY ***** $MSG"
         python3 save_formated_pr_body.py "$PR_BODY">> result.txt
         echo "::set-output name=PR_FORMATTED_BODY::$(cat ./result.txt)"
-        echo ${{ env.PR_FORMATTED_BODY }}
       shell: bash
+    - name: Print results 
+      run: |
+        echo ${{ env.PR_FORMATTED_BODY }}
     - name: Slack Notification
       uses: rtCamp/action-slack-notify@v2
       env:
