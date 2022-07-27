@@ -29,5 +29,5 @@ jobs:
       shell: bash
     - name: Print results
       run: |
-        PR_FORMATTED_BODY::$(cat ./result.txt)
+        PR_FORMATTED_BODY=$(cat ./result.txt)
         echo "$PR_FORMATTED_BODY"
