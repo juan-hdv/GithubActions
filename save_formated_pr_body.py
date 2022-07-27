@@ -56,6 +56,7 @@ class Formatter:
         if not self.body:
             self.error("Starting formatting... ")
 
+        self.body.replace("\r\n", "\n")
         self.body.replace("\r", "\n")
 
         # Get the text with the list of PRs
