@@ -11,6 +11,7 @@ jobs:
       (
       github.event.pull_request.merged == true
       )
+    id: dsss
     runs-on: ubuntu-latest
     env:
       PR_BODY: ${{ github.event.pull_request.body}}
@@ -21,7 +22,7 @@ jobs:
     - name: Checkout source code
       uses: actions/checkout@v3
       # with:
-      #   repository: NomadHealth/qa
+      #   repository: NomadHealth/nomad-env
       #   ref: Master
     - name: Run script
       run: |
@@ -31,4 +32,4 @@ jobs:
     - name: Print results
       run: |
         echo "*** ${{ github.event.pull_request.title }} ***"
-        echo "${{ env.PR_FORMATTED_BODY }}"
+        echo "$PR_FORMATTED_BODY"
