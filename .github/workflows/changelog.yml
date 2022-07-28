@@ -28,7 +28,8 @@ jobs:
         BODY="${BODY//'%'/'%25'}"
         BODY="${BODY//$'\n'/'%0A'}"
         BODY="${BODY//$'\r'/'%0D'}"  
-        BODY="${BODY//$'%22'/'%20'}"
+        BODY="${BODY//$'%22'/''}"
+        BODY="${BODY//$'%27'/''}"
         python3 save_formated_pr_body.py "$BODY" > result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
