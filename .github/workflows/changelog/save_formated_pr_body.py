@@ -80,7 +80,7 @@ class Formatter:
             return self.error(FormatterError.EMPTY_BODY)
 
         text_to_parse = self.clean_characters(text_to_parse, "`'\"][")
-        text_to_parse = text_to_parse.replace("\r\n", "\n").replace("\r", "\n")
+        #text_to_parse = text_to_parse.replace("\r\n", "\n").replace("\r", "\n")
 
         # Get the text with the list of PRs
         sections = text_to_parse.split(":robot: auto generated pull request")
@@ -140,17 +140,6 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    # body = sys.argv[1]
-    body = """# Changes
-- @AgustinJimenezBDev Revert "[CXJD-142] Jobs page to handle auth/public jobs details view" [#1537](https://github.com/NomadHealth/nomad-web-app/pull/1537)
-- @AgustinJimenezBDev [CXJD-142] Jobs page to handle auth/public jobs details view [#1529](https://github.com/NomadHealth/nomad-web-app/pull/1529)
-- @omarinho [TOFU-2007]-Fix-local_placement_consent [#1534](https://github.com/NomadHealth/nomad-web-app/pull/1534)
-
-:robot: auto generated pull request
-
-
-[CXJD-142]: https://nomadhealth.atlassian.net/browse/CXJD-142?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-[CXJD-142]: https://nomadhealth.atlassian.net/browse/CXJD-142?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-[TOFU-2007]: https://nomadhealth.atlassian.net/browse/TOFU-2007?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ""""
+    body = sys.argv[1]
     fmt = Formatter(body)
     print(fmt.format_body())
