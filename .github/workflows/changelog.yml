@@ -21,10 +21,6 @@ jobs:
     - name: PR Format body
       working-directory: .github/workflows/changelog/
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
-      # ' " space %27 %22 %20 
-      # BODY="${BODY//'%'/'%25'}"
-      # BODY="${BODY//$'\n'/'%0A'}"
-      # BODY="${BODY//$'\r'/'%0D'}"  
       env: 
         BODY: ${{ github.event.pull_request.body }}
       run: |
