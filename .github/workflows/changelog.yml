@@ -23,7 +23,7 @@ jobs:
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       run: |
         echo PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
-        python3 save_formated_pr_body.py ${{ github.event.pull_request.body }} >> $GITHUB_ENV
+        python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}" >> $GITHUB_ENV
         echo "" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 # python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}"> result.txt
