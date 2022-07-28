@@ -1,9 +1,0 @@
-There was a Production deployment on 07/26/2022 at 21:48 (UTC). It contained the following tickets:
-
-Jira Code | Description | Owner | Github Url
----------   -----------   -----   ----------
-- [CXJD-147](https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ)  Add more params to application completed tracking event  @ AgustinJimenezBDev [#11231](https://github.com/NomadHealth/nomad-flask/pull/11231)
-
-- [CXJD-149](https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ)  - Add more parameters to job viewed tracking event  @ AgustinJimenezBDev [#11241](https://github.com/NomadHealth/nomad-flask/pull/11241)
-
-
