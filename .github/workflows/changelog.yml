@@ -22,16 +22,13 @@ jobs:
       working-directory: .github/workflows/changelog/
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       run: |
+        body = ${github.event.pull_request.body//'"'/''}
+        python3 save_formated_pr_body.py "$body"> result.txt
+        PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
-        python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}" >> $GITHUB_ENV
+        echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
         echo "" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
-# python3 save_formated_pr_body.py "${{ github.event.pull_request.body }}"> result.txt
-# PR_FORMATTED_BODY=$(cat result.txt)
-# echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
-# echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
-# echo "" >> $GITHUB_ENV
-# echo "EOF" >> $GITHUB_ENV
       shell: bash
     - name: Slack Notify
       uses: rtCamp/action-slack-notify@v2
