@@ -28,8 +28,6 @@ jobs:
       env: 
         BODY: ${{ github.event.pull_request.body }}
       run: |
-        BODY="${BODY//$'%22'/''}"
-        BODY="${BODY//$'%27'/''}"
         python3 save_formated_pr_body.py "$BODY" > result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
