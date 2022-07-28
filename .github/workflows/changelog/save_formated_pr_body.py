@@ -140,6 +140,10 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    body = sys.argv[1]
+    # body = sys.argv[1]
+    body="""
+# Changes
+- @AgustinJimenezBDev Revert [CXJD-142]
+"""
     fmt = Formatter(body)
     print(fmt.format_body())
