@@ -102,7 +102,7 @@ class Formatter:
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
         result_string = (
-            f"There was a Production deployment on {date_str} (UTC), "
+            f"\nThere was a Production deployment on {date_str} (UTC), "
             f"containing the following tickets:\n\n"
         )
         for pr in pr_matches:
