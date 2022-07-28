@@ -80,7 +80,7 @@ class Formatter:
             return self.error(FormatterError.EMPTY_BODY)
 
         text_to_parse = self.clean_characters(text_to_parse, "`'\"][")
-        #text_to_parse = text_to_parse.replace("\r\n", "\n").replace("\r", "\n")
+        text_to_parse = text_to_parse.replace("\r\n", "\n").replace("\r", "\n")
 
         # Get the text with the list of PRs
         sections = text_to_parse.split(":robot: auto generated pull request")
