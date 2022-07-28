@@ -10,8 +10,6 @@ jobs:
     if: |
       (
       github.event.pull_request.merged == true &&
-      contains(github.event.pull_request.labels.*.name, 'promote') &&
-      contains(github.event.pull_request.labels.*.name, 'dev1→prod1')
       )
     runs-on: ubuntu-latest
     steps:
