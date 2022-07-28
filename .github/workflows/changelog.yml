@@ -26,6 +26,7 @@ jobs:
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
+        echo "" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV        
       shell: bash
     - name: Slack Notify
