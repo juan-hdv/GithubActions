@@ -23,10 +23,9 @@ jobs:
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       # ' " space %27 %22 %20 
       run: |
-        BODY="${{ github.event.pull_request.body }}"
-        BODY="${BODY//'%'/'%25'}"
+        BODY="${${{ github.event.pull_request.body }}//'%'/'%25'}"
         BODY="${BODY//$'\n'/'%0A'}"
-        BODY="${BODY//$'\r'/'%0D'}"        
+        BODY="${BODY//$'\r'/'%0D'}"  
         BODY="${BODY//$'%22'/'%20'}"
         python3 save_formated_pr_body.py "$BODY" > result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
