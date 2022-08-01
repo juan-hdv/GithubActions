@@ -25,6 +25,9 @@ class FormatterError(IntEnum):
     TITLE_MISSING = 340, "Missing title: Missing # Changes"
     PATTERN_NOT_FOUND = 360, "Pattern not found: - @user ... [GithubCode](GithubUrl)"
 
+    # Warnings
+    NOT_ALL_PROCESSED = 400, "Not all the PRs in the body matched the expected format"
+
 
 class Formatter:
 
@@ -38,6 +41,8 @@ class Formatter:
 
     def __init__(self, body) -> None:
         self.body = body
+        self.matched_pr_number = 0
+        self.expected_pr_number = 0
 
     def clean_characters(self, text, characters):
         for c in characters:
@@ -46,7 +51,13 @@ class Formatter:
 
     def error(self, error: FormatterError):
         if error.value == FormatterError.SUCCESS:
-            return "\n"
+            msg = "\n"
+            if self.matched_pr_number < self.expected_pr_number:
+                warn = FormatterError.NOT_ALL_PROCESSED
+                err = f"Formatting Warning [{warn.value}] :: {warn.description}"
+                line = '⎯'*(len(err)//3)
+                msg = f"\n\n{line}\n{err}\n"
+            return msg
 
         err = f"Formatting Error [{error.value}] :: {error.description}"
         line = '⎯'*(len(err)//3)
@@ -99,6 +110,10 @@ class Formatter:
         if not pr_matches:
             return self.error(FormatterError.PATTERN_NOT_FOUND)
 
+        self.expected_pr_number = text_to_parse.count("\n")
+        self.matched_pr_number = len(pr_matches)        
+        print("EXPECTED Y MATCHED, ", self.expected_pr_number, self.matched_pr_number)
+
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
         result_string = (
@@ -139,6 +154,27 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    body = sys.argv[1]
+    # body = sys.argv[1]
+    body="""
+# Changes
+- @gafalcon AH-7/Create respiratory therapist in house checklist assesment [#11372](https://github.com/NomadHealth/nomad-flask/pull/11372)
+- @gafalcon AH-28/Migration to update ah jobs covid reqs from MSPs reqs [#11301](https://github.com/NomadHealth/nomad-flask/pull/11301)
+- @stevenbellnomad [SAR-1160] Add new Worker for Celery [#11398](https://github.com/NomadHealth/nomad-flask/pull/11398)
+- @varunvenkatesh123 Facility Template Delete API [#11395](https://github.com/NomadHealth/nomad-flask/pull/11395)
+- @dummerbd Remove outdated certifications adapter [#11396](https://github.com/NomadHealth/nomad-flask/pull/11396)
+- @blackwood-nomad AH-9: add Radiology Technologist Assessment [#11386](https://github.com/NomadHealth/nomad-flask/pull/11386)
+- @tinawang01 [AH-29] Support certification-dependent state license validation for Cath Lab [#11353](https://github.com/NomadHealth/nomad-flask/pull/11353)
+- @gafalcon AH-50/Change Rad tech and Cath Lab Tech Labels [#11360](https://github.com/NomadHealth/nomad-flask/pull/11360)
+- @dummerbd ZT-363 Update codeowners [#11394](https://github.com/NomadHealth/nomad-flask/pull/11394)
+- @dummerbd [ZT-360] Refactor application adapter service to support saving credentials [#11367](https://github.com/NomadHealth/nomad-flask/pull/11367)
+- @user1 0 agag [#11367](https://github.com/NomadHealth/a.b.c)
+
+:robot: auto generated pull request
+
+
+[SAR-1160]: https://nomadhealth.atlassian.net/browse/SAR-1160?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+[AH-29]: https://nomadhealth.atlassian.net/browse/AH-29?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+[ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ    
+"""
     fmt = Formatter(body)
     print(fmt.format_body())
