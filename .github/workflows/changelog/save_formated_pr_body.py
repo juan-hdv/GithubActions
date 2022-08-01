@@ -131,7 +131,6 @@ class Formatter:
             pr_github_url = match.group(4) or self.URL_UNKNOWN
             pr_github_url = pr_github_url.strip(")(\n ")
 
-
             result_string += f"• {jira_codes_string}: {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"  # noqa
 
         result_string += self.error(FormatterError.SUCCESS)
