@@ -1,7 +1,44 @@
+import json
 from enum import IntEnum
 from datetime import datetime, timezone
 import re
 import sys
+
+
+class SlackMessageFormater:
+    """
+    Receives a list of texts
+    and created a slack json object with blocks
+    """
+    def __init__(self, text_list: list) -> None:
+        self.text_list = text_list
+        self.formated_list = {"blocks": []}
+
+    def add_divider(self):
+        divider = {"type": "divider"}
+        self.formated_list.append(divider)
+
+        return self.formated_list
+
+    def add_element(self, text_element: str):
+        self.formated_list.append(self.format_element(text_element))
+        return self.formated_list
+
+    def format_element(self, text_line: str) -> dict:
+        result = {
+            "type": "section",
+            "test": {
+                "type": "mrkdwn",
+                "text": text_line,
+            }
+        }
+        return result
+
+    def format_list(self) -> dict:
+        for element in self.text_list:
+            self.formated_list["blocks"].append(self.format_element(element))
+
+        return self.formated_list
 
 
 NOMAD_JIRA_URL = "https://nomadhealth.atlassian.net/browse/"
@@ -30,6 +67,8 @@ class FormatterError(IntEnum):
 
 
 class Formatter:
+
+    MAX_MESSSAGE_CHARACTERS = 1900
 
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
@@ -80,7 +119,7 @@ class Formatter:
         [CXJD-147]: https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
         [CXJD-149]: https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 
-        Output example:
+        Output: Slack Blocks
         There was a Production deployment on MM-DD-YYYY at HH:MM:SS.
         It contained the following tickets:
         [Link 1] Description 1 - PR owner
@@ -111,15 +150,11 @@ class Formatter:
             return self.error(FormatterError.PATTERN_NOT_FOUND)
 
         self.expected_pr_number = text_to_parse.count("\n")
-        self.matched_pr_number = len(pr_matches)        
-        print("EXPECTED Y MATCHED, ", self.expected_pr_number, self.matched_pr_number)
+        self.matched_pr_number = len(pr_matches)
 
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
-        result_string = (
-            f"\nThere was a Production deployment on {date_str} (UTC), "
-            f"containing the following tickets:\n\n"
-        )
+        result_string_list = []
         for pr in pr_matches:
             match = re.match(rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa
             if not match:
@@ -146,14 +181,49 @@ class Formatter:
             pr_github_url = match.group(4) or self.URL_UNKNOWN
             pr_github_url = pr_github_url.strip(")(\n ")
 
-            result_string += f"• {jira_codes_string}: {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"  # noqa
+            result_string_list.append(
+                f"• {jira_codes_string}: {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"
+            )  # noqa
 
-        result_string += self.error(FormatterError.SUCCESS)
+        # result_string_list = result_string_list.extend(
+        #     self.error(FormatterError.SUCCESS)
+        # )
 
-        return result_string
+        # result_string = (
+        #     f"\nThere was a Production deployment on {date_str} (UTC), "
+        #     f"containing the following tickets:\n\n"
+        # )
+
+        slack_formater = SlackMessageFormater(result_string_list)
+        slack_formater.format_list()
+
+        return slack_formater.formated_list
 
 
 if __name__ == '__main__':
-    body = sys.argv[1]
+    #body = sys.argv[1]
+    body = """
+# Changes
+- @gafalcon AH-7/Create respiratory therapist in house checklist assesment [#11372](https://github.com/NomadHealth/nomad-flask/pull/11372)
+- @gafalcon AH-28/Migration to update ah jobs covid reqs from MSPs reqs [#11301](https://github.com/NomadHealth/nomad-flask/pull/11301)
+- @stevenbellnomad [SAR-1160] Add new Worker for Celery [#11398](https://github.com/NomadHealth/nomad-flask/pull/11398)
+- @varunvenkatesh123 Facility Template Delete API [#11395](https://github.com/NomadHealth/nomad-flask/pull/11395)
+- @dummerbd Remove outdated certifications adapter [#11396](https://github.com/NomadHealth/nomad-flask/pull/11396)
+- @blackwood-nomad AH-9: add Radiology Technologist Assessment [#11386](https://github.com/NomadHealth/nomad-flask/pull/11386)
+- @tinawang01 [AH-29] Support certification-dependent state license validation for Cath Lab [#11353](https://github.com/NomadHealth/nomad-flask/pull/11353)
+- @gafalcon AH-50/Change Rad tech and Cath Lab Tech Labels [#11360](https://github.com/NomadHealth/nomad-flask/pull/11360)
+- @dummerbd ZT-363 Update codeowners [#11394](https://github.com/NomadHealth/nomad-flask/pull/11394)
+- @dummerbd [ZT-360] Refactor application adapter service to support [#11367](https://github.com/NomadHealth/nomad-flask/pull/11367)
+- @user1 0 agag [#11367](https://github.com/NomadHealth/a.b.c)
+
+:robot: auto generated pull request
+
+
+[SAR-1160]: https://nomadhealth.atlassian.net/browse/SAR-1160?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+[AH-29]: https://nomadhealth.atlassian.net/browse/AH-29?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+[ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
+"""
     fmt = Formatter(body)
-    print(fmt.format_body())
+    slack_content = fmt.format_body()
+    print(json.dumps(slack_content))
+    # print(fmt.format_body())
