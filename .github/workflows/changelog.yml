@@ -39,5 +39,5 @@ jobs:
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json; charset=utf-8' \
-          --data ${{ format(' ''channel'': ''#githubchangelog'', ''username'': ''ghActionsBot'', ''icon_emoji'': '':github:'', ''text'': {0} ', TITLE) }}
+          --data ${{ format(' ''channel'': ''#githubchangelog'', ''username'': ''ghActionsBot'', ''icon_emoji'': '':github:'', ''text'': {0} ', env.TITLE) }}
 #          "blocks": "$BLOCKS"
