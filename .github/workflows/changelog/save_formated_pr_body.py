@@ -190,7 +190,7 @@ class Formatter:
 
         bottom_message = None
         if error != FormatterError.SUCCESS:
-            bottom_message = f"\n[ {error.value} ] {error.description}\n"
+            bottom_message = f"[ {error.value} ] {error.description}"
 
         if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
             slack_formater.add_list(pr_string_list)
@@ -198,7 +198,7 @@ class Formatter:
             slack_formater.add_element(pr_string_list[0])
 
         if bottom_message is not None:
-            slack_formater.add_element(" ")
+            slack_formater.add_element("\n")
             slack_formater.add_divider()
             slack_formater.add_element(bottom_message)
 
