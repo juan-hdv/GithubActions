@@ -35,10 +35,9 @@ jobs:
       shell: bash
       env:
         MESSAGE: ${{ env.PR_FORMATTED_BODY }}
-        BLOCKS: "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": \"Danny Torrence left the following review for your property:\"}}]"
+        BLOCKS: "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": \"• Danny Torrence left the following review for your property:\"}}]"
         TITLE: "Changelog notification for a Nomad software promotion"
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json; charset=utf-8' \
           --data "{\"channel\": \"#githubchangelog\", \"username\": \"ghActionsBot\", \"icon_emoji\": \":github:\", "text": \"$TITLE\", "blocks":$BLOCKS}"
-#          "blocks": "$BLOCKS"
