@@ -34,8 +34,10 @@ jobs:
     - name: Slack Notify
       shell: bash
       env:
-        BLOCKS: ${{ env.PR_FORMATTED_BODY }}
+        # Title won't render if blocks present but will but it will show up in notifications
+        # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
         TITLE: "Changelog notification for a Nomad software promotion"
+        BLOCKS: ${{ env.PR_FORMATTED_BODY }}
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \

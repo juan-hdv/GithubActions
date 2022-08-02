@@ -1,44 +1,9 @@
 import json
+from typing import Optional
 from enum import IntEnum
 from datetime import datetime, timezone
 import re
 import sys
-
-
-class SlackMessageFormater:
-    """
-    Receives a list of texts
-    and created a slack json object with blocks
-    """
-    def __init__(self, text_list: list) -> None:
-        self.text_list = text_list
-        self.formated_list = {"blocks": []}
-
-    def add_divider(self):
-        divider = {"type": "divider"}
-        self.formated_list.append(divider)
-
-        return self.formated_list
-
-    def add_element(self, text_element: str):
-        self.formated_list.append(self.format_element(text_element))
-        return self.formated_list
-
-    def format_element(self, text_line: str) -> dict:
-        result = {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": text_line,
-            }
-        }
-        return result
-
-    def format_list(self) -> dict:
-        for element in self.text_list:
-            self.formated_list["blocks"].append(self.format_element(element))
-
-        return self.formated_list
 
 
 NOMAD_JIRA_URL = "https://nomadhealth.atlassian.net/browse/"
@@ -56,20 +21,52 @@ class FormatterError(IntEnum):
     # Informative
     SUCCESS = 0, "Formating successful"
 
-    # Errors
-    EMPTY_BODY = 300, "Empty body: PR has an empty body"
-    ROBOT_SIGN_MISSING = 320, "Missing sign: robot: auto generated pull request"
-    TITLE_MISSING = 340, "Missing title: Missing # Changes"
-    PATTERN_NOT_FOUND = 360, "Pattern not found: - @user ... [GithubCode](GithubUrl)"
-
     # Warnings
-    NOT_ALL_PROCESSED = 400, "Not all the PRs in the body matched the expected format"
+    NOT_ALL_PROCESSED = 100, "Warning :: Not all the PRs in the body matched the expected format"
+
+    # Errors
+    EMPTY_BODY = 300, "Error :: Empty body: PR has an empty body"
+    ROBOT_SIGN_MISSING = 320, "Error :: Missing sign: robot: auto generated pull request"
+    TITLE_MISSING = 340, "Error :: Missing title: Missing # Changes"
+    PATTERN_NOT_FOUND = 360, "Error :: Pattern not found: - @user ... [GithubCode](GithubUrl)"
+
+
+class SlackMessageFormater:
+    """
+    Receives a list of texts
+    and created a slack json object with blocks
+    """
+    BLOCK_KEY = "blocks"
+
+    def __init__(self) -> None:
+        self.formatted_list = {"blocks": []}
+
+    def add_divider(self):
+        divider = {"type": "divider"}
+        self.formatted_list[self.BLOCK_KEY].append(divider)
+
+        return self.formatted_list
+
+    def add_element(self, text_element: str = ""):
+        block_element = {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": text_element,
+            }
+        }
+        self.formatted_list[self.BLOCK_KEY].append(block_element)
+
+        return self.formatted_list
+
+    def add_list(self, text_list) -> dict:
+        for text_element in text_list:
+            self.add_element(text_element)
+
+        return self.formatted_list
 
 
 class Formatter:
-
-    MAX_MESSSAGE_CHARACTERS = 1900
-
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
 
@@ -78,17 +75,18 @@ class Formatter:
     PATTERN_GITHUB_CODE = "#\d+"  # noqa #605
     PATTERN_GITHUB_URL = "\(https\:\/\/github\.com\/NomadHealth.+?\)" # noqa #605
 
-    def __init__(self, body) -> None:
+    def __init__(self, body: str, title: str) -> None:
         self.body = body
+        self.title = title
         self.matched_pr_number = 0
         self.expected_pr_number = 0
 
-    def clean_characters(self, text, characters):
+    def _clean_characters(self, text, characters):
         for c in characters:
             text = text.replace(c, "")
         return text
 
-    def error(self, error: FormatterError):
+    def _error(self, error: FormatterError):
         if error.value == FormatterError.SUCCESS:
             msg = "\n"
             if self.matched_pr_number < self.expected_pr_number:
@@ -104,7 +102,7 @@ class Formatter:
 
         return msg
 
-    def format_body(self) -> str:
+    def _create_github_pr_string_list(self) -> list:
         """
         Returns a promotion body formated
 
@@ -119,46 +117,46 @@ class Formatter:
         [CXJD-147]: https://nomadhealth.atlassian.net/browse/CXJD-147?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
         [CXJD-149]: https://nomadhealth.atlassian.net/browse/CXJD-149?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 
-        Output: Slack Blocks
+        Output:
+            (Error, List of strings to be shown as Slack Blocks, with the content)
         There was a Production deployment on MM-DD-YYYY at HH:MM:SS.
         It contained the following tickets:
         [Link 1] Description 1 - PR owner
         [Link 2] Description 2 - PR owner
+        ...
         """
         text_to_parse = self.body.strip()
         if not len(text_to_parse):
-            return self.error(FormatterError.EMPTY_BODY)
+            return FormatterError.EMPTY_BODY, [self.body]
 
-        text_to_parse = self.clean_characters(text_to_parse, "`'\"][")
+        text_to_parse = self._clean_characters(text_to_parse, "`'\"][")
         text_to_parse = text_to_parse.replace("\r\n", "\n").replace("\r", "\n")
 
         # Get the text with the list of PRs
         sections = text_to_parse.split(":robot: auto generated pull request")
         if len(sections) <= 1:
-            return self.error(FormatterError.ROBOT_SIGN_MISSING)
+            return FormatterError.ROBOT_SIGN_MISSING, [self.body]
 
         text_to_parse = sections[0]
         sections = text_to_parse.split("# Changes")
         if len(sections) <= 1:
-            return self.error(FormatterError.TITLE_MISSING)
+            return FormatterError.TITLE_MISSING, [self.body]
 
         text_to_parse = text_to_parse.lstrip().rstrip()
 
         # Get each of the PR's info
         pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?{self.PATTERN_GITHUB_CODE}{self.PATTERN_GITHUB_URL})\n?", text_to_parse, re.DOTALL)  # noqa
         if not pr_matches:
-            return self.error(FormatterError.PATTERN_NOT_FOUND)
+            return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
         self.expected_pr_number = text_to_parse.count("\n")
         self.matched_pr_number = len(pr_matches)
 
-        date_obj = datetime.now(timezone.utc)
-        date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
         result_string_list = []
         for pr in pr_matches:
             match = re.match(rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa
             if not match:
-                return self.error(FormatterError.PATTERN_NOT_FOUND)
+                return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
             owner = match.group(1)
             owner = owner.replace("@", "@ ") if owner else "@ Unknown"
@@ -185,19 +183,44 @@ class Formatter:
                 f"• {jira_codes_string}: {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"
             )  # noqa
 
-        # result_string_list = result_string_list.extend(
-        #     self.error(FormatterError.SUCCESS)
-        # )
+        if self.matched_pr_number < self.expected_pr_number:
+            return FormatterError.NOT_ALL_PROCESSED, result_string_list
 
-        # result_string = (
-        #     f"\nThere was a Production deployment on {date_str} (UTC), "
-        #     f"containing the following tickets:\n\n"
-        # )
+        return FormatterError.SUCCESS, result_string_list
 
-        slack_formater = SlackMessageFormater(result_string_list)
-        slack_formater.format_list()
+    def to_slack_format(self) -> dict:
+        slack_formater = SlackMessageFormater()
 
-        return slack_formater.formated_list
+        slack_formater.add_element(self.title)
+        slack_formater.add_divider()
+
+        error, pr_string_list = self._create_github_pr_string_list()
+
+        date_obj = datetime.now(timezone.utc)
+        date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
+        header = (
+            f"\nThere was a Production deployment on {date_str} (UTC), "
+            f"containing the following tickets:\n\n"
+        )
+        slack_formater.add_element(header)
+        slack_formater.add_divider()
+
+        bottom_message = None
+        if error != FormatterError.SUCCESS:
+            msg = f"[{error.value}] {error.description}"
+            divider = '⎯'*(len(msg)//3)
+            bottom_message = f"\n\n{divider}\n{msg}\n"
+
+        if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
+            slack_formater.add_list(pr_string_list)
+        else:
+            slack_formater.add_element(pr_string_list[0])
+
+        if bottom_message is not None:
+            slack_formater.add_divider()
+            slack_formater.add_element(bottom_message)
+
+        return slack_formater.formatted_list
 
 
 if __name__ == '__main__':
@@ -225,7 +248,8 @@ if __name__ == '__main__':
 [AH-29]: https://nomadhealth.atlassian.net/browse/AH-29?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 [ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 """
-    fmt = Formatter(body)
-    slack_content = fmt.format_body()
-    print(json.dumps(slack_content["blocks"]))
-    # print(fmt.format_body())
+    title = "Changelog notification for a Nomad software promotion"
+    fmt = Formatter(body=body, title=title)
+    body_content = fmt.to_slack_format()
+
+    print(json.dumps(body_content["blocks"]))
