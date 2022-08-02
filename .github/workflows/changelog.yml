@@ -37,4 +37,4 @@ jobs:
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json; charset=utf-8' \
-          --data '{ "channel": "#githubchangelog", "username": "ghActionsBot", "icon_emoji": ":github:", "text": "Changelog notification for a Nomad software promotion", "blocks": $BODY }'
+          --data '{ "channel": "#githubchangelog", "username": "ghActionsBot", "icon_emoji": ":github:", "text": "Changelog notification for a Nomad software promotion", "blocks": "Hello world" }'
