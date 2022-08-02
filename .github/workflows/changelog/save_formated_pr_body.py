@@ -198,6 +198,7 @@ class Formatter:
             slack_formater.add_element(pr_string_list[0])
 
         if bottom_message is not None:
+            slack_formater.add_element(" ")
             slack_formater.add_divider()
             slack_formater.add_element(bottom_message)
 
@@ -207,7 +208,7 @@ class Formatter:
 if __name__ == '__main__':
     #body = sys.argv[1]
     body = """
-# Changes
+# C*hanges
 - @gafalcon AH-7/Create respiratory therapist in house checklist assesment [#11372](https://github.com/NomadHealth/nomad-flask/pull/11372)
 - @gafalcon AH-28/Migration to update ah jobs covid reqs from MSPs reqs [#11301](https://github.com/NomadHealth/nomad-flask/pull/11301)
 - @stevenbellnomad [SAR-1160] Add new Worker for Celery [#11398](https://github.com/NomadHealth/nomad-flask/pull/11398)
@@ -222,7 +223,7 @@ if __name__ == '__main__':
 - @zhang8128 [CXJD-120] Public Job Details API [#11185](https://github.com/NomadHealth/nomad-flask/pull/11185)
 - @djru Updated readme for job robotix [#11380](https://github.com/NomadHealth/nomad-flask/pull/11380)
 
-:*robot: auto generated pull request
+:robot: auto generated pull request
 
 
 [SAR-1160]: https://nomadhealth.atlassian.net/browse/SAR-1160?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
