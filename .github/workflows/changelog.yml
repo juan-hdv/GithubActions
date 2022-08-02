@@ -34,8 +34,8 @@ jobs:
     - name: Slack Notify
       shell: bash
       env:
-        MESSAGE: ${{ env.PR_FORMATTED_BODY }}
-        BLOCKS: "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": \"• Danny Torrence left the following review for your property:\"}}]"
+        BLOCKS: ${{ env.PR_FORMATTED_BODY }}
+        MESSAGE: "[{\"type\": \"section\", \"text\": {\"type\": \"mrkdwn\", \"text\": \"• Danny Torrence left the following review for your property:\"}}]"
         TITLE: "Changelog notification for a Nomad software promotion"
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
