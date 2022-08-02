@@ -32,11 +32,14 @@ jobs:
         echo "EOF" >> $GITHUB_ENV
       shell: bash
     - name: Slack Notify
-      run: |
-          curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
-          --header 'Content-Type: application/json' \
-          --data "${{ env.PR_FORMATTED_BODY }}"
-
-          curl -X POST "${{ secrets.SLACK_WEBHOOK }}" \
-          --header 'Content-type: application/json; charset=utf-8' \
-          --data '{ "channel": "#changelog", "username": "ghActionsBot", "icon_emoji": ":github:", "text": "Changelog notification for a Nomad software promotion", "message": ${{ env.PR_FORMATTED_BODY }} }' \
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: changelog
+        SLACK_USERNAME: 'ghActionsBot'
+        SLACK_ICON_EMOJI: ':github:'
+        SLACK_COLOR: '#90DBA4'
+        SLACK_TITLE: Changelog notification for a Nomad software promotion
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        MSG_MINIMAL: Actions URL, Commit
+        SLACK_MESSAGE: |
+          ${{ env.PR_FORMATTED_BODY }}
