@@ -39,8 +39,7 @@ jobs:
         TITLE: "Changelog notification for a Nomad software promotion"
       run: |
           data='"channel": "#githubchangelog", "username": "ghActionsBot", "icon_emoji": ":github:", text='
-          data="$data $TITLE"
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json; charset=utf-8' \
-          --data "{$data}"
+          --data "{$data $TITLE}"
 #          "blocks": "$BLOCKS"
