@@ -43,11 +43,11 @@ jobs:
           "icon_emoji": ":github:",
           "text": "Changelog notification for a Nomad software promotion",
           "blocks": [
-              {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Danny Torrence left the following review for your property:"
-              }
-            ]
+          {
+          "type": "section",
+          "text": {
+          "type": "mrkdwn",
+          "text": "Danny Torrence left the following review for your property:"
+          }
+          ]
           }'
