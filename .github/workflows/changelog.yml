@@ -33,6 +33,6 @@ jobs:
       shell: bash
     - name: Slack Notify
       run: |
-          curl -X POST "${{ secrets.SLACK_WEBHOOK }}" \
+          curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json; charset=utf-8' \
-          --data '{ "channel": "#changelog", "username": "ghActionsBot", "icon_emoji": ":github:", "text": "Changelog notification for a Nomad software promotion", "message": "${{ env.PR_FORMATTED_BODY }}"" }' \
+          --data '{ "channel": "#changelog", "username": "ghActionsBot", "icon_emoji": ":github:", "text": "Changelog notification for a Nomad software promotion", "blocks": "${{ env.PR_FORMATTED_BODY }}" }' \
