@@ -38,7 +38,7 @@ jobs:
         # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
         TITLE: "Changelog notification for a Nomad software promotion"
         BLOCKS: ${{ env.PR_FORMATTED_BODY }}
-        GITHUB_PARAMS: "\"actor\": $GITHUB_ACTOR, \"repo\": $GITHUB_REPOSITORY, \"ref\": $GITHUB_BASE_REF, \"commit\": $GITHUB_HEAD_REF"
+        GITHUB_PARAMS: "\"actor\": \"$GITHUB_ACTOR\", \"repo\": \"$GITHUB_REPOSITORY\", \"ref\": \"$GITHUB_BASE_REF\", \"commit\": \"$GITHUB_HEAD_REF\""
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \
