@@ -43,6 +43,6 @@ jobs:
           "channel": "#githubchangelog",
           "username": "ghActionsBot",
           "icon_emoji": ":github:",
-          "text": "$TITLE",
+          "text": $TITLE,
           }'
 #          "blocks": "$BLOCKS"
