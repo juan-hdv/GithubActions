@@ -191,7 +191,7 @@ class Formatter:
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
 
-        slack_formater.add_element(self.title)
+        slack_formater.add_element(f"**{self.title}**")
         slack_formater.add_divider()
 
         error, pr_string_list = self._create_github_pr_string_list()
@@ -203,7 +203,6 @@ class Formatter:
             f"containing the following tickets:\n\n"
         )
         slack_formater.add_element(header)
-        slack_formater.add_divider()
 
         bottom_message = None
         if error != FormatterError.SUCCESS:
