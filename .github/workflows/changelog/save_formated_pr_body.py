@@ -190,7 +190,7 @@ class Formatter:
 
         bottom_message = None
         if error != FormatterError.SUCCESS:
-            bottom_message = f"\n[{error.value}] {error.description}\n"
+            bottom_message = f"\n[ {error.value} ] {error.description}\n"
 
         if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
             slack_formater.add_list(pr_string_list)
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 - @zhang8128 [CXJD-120] Public Job Details API [#11185](https://github.com/NomadHealth/nomad-flask/pull/11185)
 - @djru Updated readme for job robotix [#11380](https://github.com/NomadHealth/nomad-flask/pull/11380)
 
-:robot: auto generated pull request
+:*robot: auto generated pull request
 
 
 [SAR-1160]: https://nomadhealth.atlassian.net/browse/SAR-1160?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
