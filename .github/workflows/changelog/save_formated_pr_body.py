@@ -86,22 +86,6 @@ class Formatter:
             text = text.replace(c, "")
         return text
 
-    def _error(self, error: FormatterError):
-        if error.value == FormatterError.SUCCESS:
-            msg = "\n"
-            if self.matched_pr_number < self.expected_pr_number:
-                warn = FormatterError.NOT_ALL_PROCESSED
-                err = f"Formatting Warning [{warn.value}] :: {warn.description}"
-                line = '⎯'*(len(err)//3)
-                msg = f"\n\n{line}\n{err}\n"
-            return msg
-
-        err = f"Formatting Error [{error.value}] :: {error.description}"
-        line = '⎯'*(len(err)//3)
-        msg = f"{self.body}\n\n{line}\n{err}\n"
-
-        return msg
-
     def _create_github_pr_string_list(self) -> list:
         """
         Returns a promotion body formated
@@ -191,7 +175,7 @@ class Formatter:
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
 
-        slack_formater.add_element(f"**{self.title}**")
+        slack_formater.add_element(f"*{self.title}*")
         slack_formater.add_divider()
 
         error, pr_string_list = self._create_github_pr_string_list()
@@ -206,9 +190,7 @@ class Formatter:
 
         bottom_message = None
         if error != FormatterError.SUCCESS:
-            msg = f"[{error.value}] {error.description}"
-            divider = '⎯'*(len(msg)//3)
-            bottom_message = f"\n\n{divider}\n{msg}\n"
+            bottom_message = f"\n[{error.value}] {error.description}\n"
 
         if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
             slack_formater.add_list(pr_string_list)
