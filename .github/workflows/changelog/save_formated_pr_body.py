@@ -227,5 +227,5 @@ if __name__ == '__main__':
 """
     fmt = Formatter(body)
     slack_content = fmt.format_body()
-    print(json.dumps(slack_content))
+    print(json.dumps(slack_content["blocks"]))
     # print(fmt.format_body())
