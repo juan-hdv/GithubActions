@@ -25,7 +25,8 @@ jobs:
       env:
         BODY: ${{ github.event.pull_request.body }}
       run: |
-        python3 save_formated_pr_body.py "$BODY" > result.txt
+        github_params: "{"\"actor\": $GITHUB_ACTOR, \"repo\": $GITHUB_REPOSITORY, \"ref\": $GITHUB_BASE_REF, \"commit\": $GITHUB_HEAD_REF}"
+        python3 save_formated_pr_body.py "$GITHUB_PARAMS" "$github_params"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
@@ -38,7 +39,6 @@ jobs:
         # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
         TITLE: "Changelog notification for a Nomad software promotion"
         BLOCKS: ${{ env.PR_FORMATTED_BODY }}
-        GITHUB_PARAMS: "\"actor\": \"$GITHUB_ACTOR\", \"repo\": \"$GITHUB_REPOSITORY\", \"ref\": \"$GITHUB_BASE_REF\", \"commit\": \"$GITHUB_HEAD_REF\""
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \
