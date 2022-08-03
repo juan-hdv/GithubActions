@@ -232,7 +232,7 @@ if __name__ == '__main__':
 [ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 """
     title = "Changelog notification for a Nomad software promotion"
-    title = json.dumps(f"---github_params---")
+    title = json.dumps(f"---{github_params}---")
 
     fmt = Formatter(body=body, title=title)
     body_content = fmt.to_slack_format()
