@@ -13,7 +13,7 @@ jobs:
       )
     runs-on: ubuntu-latest
     env:
-      TITLE: "Changelog notification for a Nomad software promotion mas larga que lo pensado"
+      TITLE: "Changelog notification for a Nomad software promotion"
 
     steps:
     - name: PR Log title
@@ -41,10 +41,11 @@ jobs:
     - name: Slack Notify
       shell: bash
       env:
+        BLOCKS: ${{ env.PR_FORMATTED_BODY }}
         # Title won't render if blocks is present but will show up in notifications
         # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
-        BLOCKS: ${{ env.PR_FORMATTED_BODY }}
+        TIT: ${{ env.TITLE }}
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \
-          --data "{\"channel\": \"#changelog\", \"username\": \"ghActionsBot\", \"icon_emoji\": \":github:\", "text": \"${{ env.TITLE }}\", "blocks": $BLOCKS}"
+          --data "{\"channel\": \"#changelog\", \"username\": \"ghActionsBot\", \"icon_emoji\": \":github:\", "text": \"$TIT\", "blocks": $BLOCKS}"
