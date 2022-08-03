@@ -12,6 +12,9 @@ jobs:
       github.event.pull_request.merged == true
       )
     runs-on: ubuntu-latest
+    env:
+      TITLE: "Changelog notification for a Nomad software promotion"
+
     steps:
     - name: PR Log title
       run: |
@@ -23,8 +26,8 @@ jobs:
       working-directory: .github/workflows/changelog/
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       env:
+        # PR_SHA: ${{ github.event.pull_request.head.sha }}
         BODY: ${{ github.event.pull_request.body }}
-        PR_SHA: ${{ github.event.pull_request.head.sha }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
         PR_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER"
@@ -38,11 +41,10 @@ jobs:
     - name: Slack Notify
       shell: bash
       env:
-        # Title won't render if blocks present but will but it will show up in notifications
+        # Title won't render if blocks is present but will show up in notifications
         # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
-        TITLE: "Changelog notification for a Nomad software promotion"
         BLOCKS: ${{ env.PR_FORMATTED_BODY }}
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \
-          --data "{\"channel\": \"#changelog\", \"username\": \"ghActionsBot\", \"icon_emoji\": \":github:\", "text": \"$TITLE\", "blocks": $BLOCKS}"
+          --data "{\"channel\": \"#changelog\", \"username\": \"ghActionsBot\", \"icon_emoji\": \":github:\", "text": \"${{ env.TITLE }}\", "blocks": $BLOCKS}"
