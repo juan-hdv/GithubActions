@@ -13,7 +13,7 @@ jobs:
       )
     runs-on: ubuntu-latest
     env:
-      TITLE: "Changelog notification for a Nomad software promotion"
+      TITLE: "Changelog notification for a Nomad software promotion con unas cuantas mas palabrasa"
 
     steps:
     - name: PR Log title
