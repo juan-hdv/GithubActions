@@ -27,9 +27,9 @@ jobs:
         PR_SHA: ${{ github.event.pull_request.head.sha }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
       run: |
-        PR_URL="<$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER|PR Url>"
-        GITHUB_PARAMS="{ 'actor': $GITHUB_ACTOR, 'repo': $GITHUB_REPOSITORY, 'ref': $GITHUB_REF, 'pr_url': $PR_URL }"
-        python3 save_formated_pr_body.py "$BODY" "$GITHUB_PARAMS"> result.txt
+        PR_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER"
+        GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL' }"
+        python3 format_pr_body.py "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
