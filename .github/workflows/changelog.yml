@@ -25,7 +25,8 @@ jobs:
       env:
         BODY: ${{ github.event.pull_request.body }}
         PR_SHA: ${{ github.event.pull_request.head.sha }}
-        PR_URL: ${{ github.event.pull_request.url }}
+        A: <https://github.com/NomadHealth/nomad-env/pull/${{ github.event.pull_request.pull_number }}|PR Url>
+        PR_URL: <https://$GITHUB_SERVER_URL/$GITHUB_REPOSITORY_OWNER/$GITHUB_REPOSITORY/pull/${{ github.event.pull_request.pull_number }}|PR Url>
       run: |
         GITHUB_PARAMS="{ 'actor': $GITHUB_ACTOR, 'repo': $GITHUB_REPOSITORY, 'ref': $GITHUB_REF, 'pr_url': $PR_URL }"
         python3 save_formated_pr_body.py "$BODY" "$GITHUB_PARAMS"> result.txt
