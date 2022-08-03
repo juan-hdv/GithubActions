@@ -90,7 +90,7 @@ class Formatter:
     def __init__(self, body: str, title: str, params: str) -> None:
         self.body = body
         self.title = title
-        self.params = json.loads(github_params)
+        # self.params = json.loads(github_params)
         self.matched_pr_number = 0
         self.expected_pr_number = 0
 
@@ -189,7 +189,7 @@ class Formatter:
         slack_formater = SlackMessageFormater()
 
         slack_formater.add_element(f"*{self.title}*")
-        slack_formater.add_fields(self.params)
+        # slack_formater.add_fields(self.params)
         slack_formater.add_divider()
 
         error, pr_string_list = self._create_github_pr_string_list()
