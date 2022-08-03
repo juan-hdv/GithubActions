@@ -90,7 +90,7 @@ class Formatter:
     def __init__(self, body: str, title: str, params: str) -> None:
         self.body = body
         self.title = title
-        # self.params = json.loads(github_params)
+        self.params = json.loads(github_params.replace("'", '"'))
         self.matched_pr_number = 0
         self.expected_pr_number = 0
 
@@ -189,7 +189,7 @@ class Formatter:
         slack_formater = SlackMessageFormater()
 
         slack_formater.add_element(f"*{self.title}*")
-        # slack_formater.add_fields(self.params)
+        slack_formater.add_fields(self.params)
         slack_formater.add_divider()
 
         error, pr_string_list = self._create_github_pr_string_list()
@@ -249,7 +249,7 @@ if __name__ == '__main__':
 [ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 """
     title = "Changelog notification for a Nomad software promotion"
-    title = github_params.replace("'", '"')
+    title = github_params
 
     fmt = Formatter(body=body, title=title, params=github_params)
 
