@@ -23,10 +23,10 @@ jobs:
       working-directory: .github/workflows/changelog/
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       env:
-        github_params: "{\"actor\": $GITHUB_ACTOR, \"repo\": $GITHUB_REPOSITORY, \"ref\": $GITHUB_BASE_REF, \"commit\": $GITHUB_HEAD_REF}"
+        GITHUB_PARAMS: "{\"actor\": $GITHUB_ACTOR, \"repo\": $GITHUB_REPOSITORY, \"ref\": $GITHUB_BASE_REF, \"commit\": $GITHUB_HEAD_REF}"
         BODY: ${{ github.event.pull_request.body }}
       run: |
-        python3 save_formated_pr_body.py "$BODY" "$github_params"> result.txt
+        python3 save_formated_pr_body.py "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
