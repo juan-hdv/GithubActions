@@ -206,7 +206,8 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    # body = sys.argv[1]
+    body = sys.argv[1]
+    github_params = sys.argv[2]
     body="""
 # Changes
 - @gafalcon AH-7/Create respiratory therapist in house checklist assesment [#11372](https://github.com/NomadHealth/nomad-flask/pull/11372)
@@ -231,6 +232,7 @@ if __name__ == '__main__':
 [ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
 """
     title = "Changelog notification for a Nomad software promotion"
+    title = json.dumps(f"---github_params---")
 
     fmt = Formatter(body=body, title=title)
     body_content = fmt.to_slack_format()
