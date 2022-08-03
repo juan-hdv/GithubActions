@@ -24,9 +24,10 @@ jobs:
       # Multiline strings from: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
       env:
         BODY: ${{ github.event.pull_request.body }}
-        COMMIT: <https://github.com/NomadHealth/nomad-env/commit/${{ github.event.pull_request.head.sha }}|Commit>
+        PR_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_URL: ${{ github.event.pull_request.url }}
       run: |
-        GITHUB_PARAMS="{ 'actor': $GITHUB_ACTOR, 'repo': $GITHUB_REPOSITORY, 'ref': $GITHUB_REF, "commit": $COMMIT }"
+        GITHUB_PARAMS="{ 'actor': $GITHUB_ACTOR, 'repo': $GITHUB_REPOSITORY, 'ref': $GITHUB_REF, "PR Url": $PR_URL }"
         python3 save_formated_pr_body.py "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
