@@ -224,7 +224,6 @@ if __name__ == '__main__':
     body = sys.argv[2]
     github_params = sys.argv[3]
 
-    #title = "Changelog notification for a Nomad software promotion"
     fmt = Formatter(body=body, title=title, params=github_params)
     body_content = fmt.to_slack_format()
 
