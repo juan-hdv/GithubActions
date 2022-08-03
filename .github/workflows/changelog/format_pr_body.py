@@ -223,36 +223,8 @@ if __name__ == '__main__':
     body = sys.argv[1]
     github_params = sys.argv[2]
 
-    # github_params = '{ "actor": "juan-hdv", "repo": "juan-hdv/GithubActions", "ref": "refs/heads/main", "pr_url": "https://github.com/juan-hdv/GithubActions/pull/221"}'
-
-    body="""
-# Changes
-- @gafalcon AH-7/Create respiratory therapist in house checklist assesment [#11372](https://github.com/NomadHealth/nomad-flask/pull/11372)
-- @gafalcon AH-28/Migration to update ah jobs covid reqs from MSPs reqs [#11301](https://github.com/NomadHealth/nomad-flask/pull/11301)
-- @stevenbellnomad [SAR-1160] Add new Worker for Celery [#11398](https://github.com/NomadHealth/nomad-flask/pull/11398)
-- @varunvenkatesh123 Facility Template Delete API [#11395](https://github.com/NomadHealth/nomad-flask/pull/11395)
-- @dummerbd Remove outdated certifications adapter [#11396](https://github.com/NomadHealth/nomad-flask/pull/11396)
-- @blackwood-nomad AH-9: add Radiology Technologist Assessment [#11386](https://github.com/NomadHealth/nomad-flask/pull/11386)
-- @tinawang01 [AH-29] Support certification-dependent state license validation for Cath Lab [#11353](https://github.com/NomadHealth/nomad-flask/pull/11353)
-- @gafalcon AH-50/Change Rad tech and Cath Lab Tech Labels [#11360](https://github.com/NomadHealth/nomad-flask/pull/11360)
-- @dummerbd ZT-363 Update codeowners [#11394](https://github.com/NomadHealth/nomad-flask/pull/11394)
-- @dummerbd [ZT-360] Refactor application adapter service to support saving credentials [#11367](https://github.com/NomadHealth/nomad-flask/pull/11367)
-- @eakman-nomad fix: updates version of nomad-env SRE-642 [#11392](https://github.com/NomadHealth/nomad-flask/pull/11392)
-- @zhang8128 [CXJD-120] Public Job Details API [#11185](https://github.com/NomadHealth/nomad-flask/pull/11185)
-- @djru Updated readme for job robotix [#11380](https://github.com/NomadHealth/nomad-flask/pull/11380)
-
-:robot: auto generated pull request
-
-
-[SAR-1160]: https://nomadhealth.atlassian.net/browse/SAR-1160?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-[AH-29]: https://nomadhealth.atlassian.net/browse/AH-29?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-[ZT-360]: https://nomadhealth.atlassian.net/browse/ZT-360?atlOrigin=eyJpIjoiNWRkNTljNzYxNjVmNDY3MDlhMDU5Y2ZhYzA5YTRkZjUiLCJwIjoiZ2l0aHViLWNvbS1KU1cifQ
-"""
     title = "Changelog notification for a Nomad software promotion"
-    title = github_params
-
     fmt = Formatter(body=body, title=title, params=github_params)
-
     body_content = fmt.to_slack_format()
 
     print(json.dumps(body_content["blocks"]))
