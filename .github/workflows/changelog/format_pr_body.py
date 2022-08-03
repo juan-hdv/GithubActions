@@ -1,5 +1,4 @@
 import json
-from typing import Optional
 from enum import IntEnum
 from datetime import datetime, timezone
 import re
@@ -47,21 +46,21 @@ class SlackMessageFormater:
 
         return self.formatted_list
 
-    def add_element(self, text_element: str = ""):
-        block_element = {
+    def add_text(self, text_element: str = ""):
+        text_section = {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
                 "text": text_element,
             }
         }
-        self.formatted_list[self.BLOCK_KEY].append(block_element)
+        self.formatted_list[self.BLOCK_KEY].append(text_section)
 
         return self.formatted_list
 
     def add_list(self, text_list) -> dict:
         for text_element in text_list:
-            self.add_element(text_element)
+            self.add_text(text_element)
 
         return self.formatted_list
 
@@ -71,9 +70,9 @@ class SlackMessageFormater:
             value = f"<{v}|{key.upper()}>" if "url" in key else v
             field_list.append({"type": "mrkdwn", "text": f"{key}: {value}"})
 
-        section_element = {"type": "section", "fields": field_list}
+        fields_element = {"type": "section", "fields": field_list}
 
-        self.formatted_list[self.BLOCK_KEY].append(section_element)
+        self.formatted_list[self.BLOCK_KEY].append(fields_element)
 
         return self.formatted_list
 
@@ -81,8 +80,8 @@ class SlackMessageFormater:
 class Formatter:
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
-
     URL_UNKNOWN = "http://unknown"
+
     PATTERN_USER = "@[a-zA-Z0-9_-]+"  # noqa #605
     PATTERN_GITHUB_CODE = "#\d+"  # noqa #605
     PATTERN_GITHUB_URL = "\(https\:\/\/github\.com\/NomadHealth.+?\)" # noqa #605
@@ -177,7 +176,8 @@ class Formatter:
             pr_github_url = pr_github_url.strip(")(\n ")
 
             result_string_list.append(
-                f"• {jira_codes_string}: {description} {owner} <{pr_github_url}|[PR: {pr_github_code}]>\n"
+                f"• {jira_codes_string}: {description} {owner}"
+                f" <{pr_github_url}|[PR: {pr_github_code}]>\n"
             )  # noqa
 
         if self.matched_pr_number < self.expected_pr_number:
@@ -188,7 +188,7 @@ class Formatter:
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
 
-        slack_formater.add_element(f"*{self.title}*")
+        slack_formater.add_text(f"*{self.title}*")
         slack_formater.add_fields(self.params)
         slack_formater.add_divider()
 
@@ -200,7 +200,7 @@ class Formatter:
             f"\nThere was a Production deployment on {date_str} (UTC), "
             f"containing the following tickets:\n\n"
         )
-        slack_formater.add_element(header)
+        slack_formater.add_text(header)
 
         bottom_message = None
         if error != FormatterError.SUCCESS:
@@ -209,18 +209,18 @@ class Formatter:
         if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
             slack_formater.add_list(pr_string_list)
         else:
-            slack_formater.add_element(pr_string_list[0])
+            slack_formater.add_text(pr_string_list[0])
 
         if bottom_message is not None:
-            slack_formater.add_element("\n")
+            slack_formater.add_text("\n")
             slack_formater.add_divider()
-            slack_formater.add_element(bottom_message)
+            slack_formater.add_text(bottom_message)
 
         return slack_formater.formatted_list
 
 
 if __name__ == '__main__':
-    title = sys.argv[1] 
+    title = sys.argv[1]
     body = sys.argv[2]
     github_params = sys.argv[3]
 
