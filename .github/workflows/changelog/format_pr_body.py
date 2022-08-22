@@ -28,6 +28,7 @@ class FormatterError(IntEnum):
     ROBOT_SIGN_MISSING = 320, "Error :: Missing sign: robot: auto generated pull request"
     TITLE_MISSING = 340, "Error :: Missing title: Missing # Changes"
     PATTERN_NOT_FOUND = 360, "Error :: Pattern not found: - @user ... [GithubCode](GithubUrl)"
+    REPO_NAME_MISSING = 380, "Error :: Repository name not found: - Promote <repo-name>"
 
 
 class SlackMessageFormater:
@@ -79,6 +80,7 @@ class SlackMessageFormater:
 
 class Formatter:
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
+    PATTERN_REPO_NAME = "[a-z-]+"  # noqa #605
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
     URL_UNKNOWN = "http://unknown"
 
@@ -141,7 +143,7 @@ class Formatter:
         text_to_parse = text_to_parse.lstrip().rstrip()
 
         # Get each of the PR's info
-        pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?{self.PATTERN_GITHUB_CODE}{self.PATTERN_GITHUB_URL})\n?", text_to_parse, re.DOTALL)  # noqa
+        pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?{self.PATTERN_GITHUB_CODE}{self.PATTERN_GITHUB_URL})\n?", text_to_parse, re.DOTALL) # noqa #501
         if not pr_matches:
             return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
@@ -150,7 +152,7 @@ class Formatter:
 
         result_string_list = []
         for pr in pr_matches:
-            match = re.match(rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa
+            match = re.match(rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa #501
             if not match:
                 return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
@@ -185,8 +187,19 @@ class Formatter:
 
         return FormatterError.SUCCESS, result_string_list
 
+    def process_parameters(self) -> dict:
+        """ Particular formating for params """
+        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME})", self.params['promo_title']) # noqa #501
+        if not match:
+            return FormatterError.REPO_NAME_MISSING, [self.body]
+
+        repo_name = match.group(1)
+        self.params["repo"] = f"NomadHealth/{repo_name}"
+
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
+
+        self.process_parameters()
 
         slack_formater.add_text(f"*{self.title}*")
         slack_formater.add_fields(self.params)
