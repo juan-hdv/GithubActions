@@ -150,7 +150,11 @@ class Formatter:
         text_to_parse = text_to_parse.lstrip().rstrip()
 
         # Get each of the PR's info
-        pr_matches = re.findall(rf"\s*(-\s{self.PATTERN_USER}.*?{self.PATTERN_GITHUB_CODE}{self.PATTERN_GITHUB_URL})\n?", text_to_parse, re.DOTALL) # noqa #501
+        pr_matches = re.findall(
+            rf"\s*(-\s{self.PATTERN_USER}.*?{self.PATTERN_GITHUB_CODE}{self.PATTERN_GITHUB_URL})\n?", # noqa #501
+            text_to_parse,
+            re.DOTALL
+        )
         if not pr_matches:
             return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
@@ -159,7 +163,8 @@ class Formatter:
 
         result_string_list = []
         for pr in pr_matches:
-            match = re.match(rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa #501
+            match = re.match(
+                rf"\s*-\s+({self.PATTERN_USER})\s+(.*)({self.PATTERN_GITHUB_CODE})({self.PATTERN_GITHUB_URL})", pr) # noqa #501
             if not match:
                 return FormatterError.PATTERN_NOT_FOUND, [self.body]
 
@@ -196,7 +201,11 @@ class Formatter:
 
     def process_parameters(self) -> dict:
         """ Particular formating for params """
-        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME}.*)", self.promotion_title) # noqa #501
+        match = re.match(
+            rf"^Promote\s({self.PATTERN_REPO_NAME})\s*.*$",
+            self.promotion_title,
+            re.IGNORECASE
+        )
         if not match:
             return FormatterError.REPO_NAME_MISSING, [self.body]
 
