@@ -4,6 +4,7 @@ on:
     types:
       - closed
     branches:
+# FROM HERE Change to work on Nomad Action    
       - main
 jobs:
   promoted_to_prod:
@@ -11,6 +12,7 @@ jobs:
       (
       github.event.pull_request.merged == true
       )
+# TO HERE
     runs-on: ubuntu-latest
     env:
       TITLE: "Changelog notification for a Nomad software promotion"
@@ -29,9 +31,10 @@ jobs:
         # PR_SHA: ${{ github.event.pull_request.head.sha }}
         BODY: ${{ github.event.pull_request.body }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
+        PROMOTION_TITLE: ${{ github.event.pull_request.title }}"
       run: |
         PR_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER"
-        GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL' }"
+        GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL', 'promo_title': $PROMOTION_TITLE}"
         python3 format_pr_body.py "${{ env.TITLE }}" "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
