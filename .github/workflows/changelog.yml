@@ -34,7 +34,7 @@ jobs:
         PROMOTION_TITLE: ${{ github.event.pull_request.title }}"
       run: |
         PR_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER"
-        GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL', 'promo_title': '$PROMOTION_TITLE' }"
+        GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL' }"
         python3 format_pr_body.py "${{ env.TITLE }}" "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
