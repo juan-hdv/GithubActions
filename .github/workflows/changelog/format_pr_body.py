@@ -80,7 +80,7 @@ class SlackMessageFormater:
 
 class Formatter:
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
-    PATTERN_REPO_NAME = "[a-z-]+"  # noqa #605
+    PATTERN_REPO_NAME = "[a-z-/_]+"  # noqa #605
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
     URL_UNKNOWN = "http://unknown"
 
@@ -88,9 +88,15 @@ class Formatter:
     PATTERN_GITHUB_CODE = "#\d+"  # noqa #605
     PATTERN_GITHUB_URL = "\(https\:\/\/github\.com\/NomadHealth.+?\)" # noqa #605
 
-    def __init__(self, body: str, title: str, params: str) -> None:
+    def __init__(
+        promotion_title: str,
+        notification_title: str,
+        self, body: str,
+        params: str
+    ) -> None:
         self.body = body
-        self.title = title
+        self.notification_title = notification_title
+        self.promotion_title = promotion_title
         self.params = json.loads(github_params.replace("'", '"'))
         self.matched_pr_number = 0
         self.expected_pr_number = 0
@@ -189,7 +195,7 @@ class Formatter:
 
     def process_parameters(self) -> dict:
         """ Particular formating for params """
-        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME})", self.params.get('promo_title',"")) # noqa #501
+        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME}.*)", self.promotion_title) # noqa #501
         if not match:
             return FormatterError.REPO_NAME_MISSING, [self.body]
 
@@ -201,7 +207,7 @@ class Formatter:
 
         self.process_parameters()
 
-        slack_formater.add_text(f"*{self.title}*")
+        slack_formater.add_text(f"*{self.notification_title}*")
         slack_formater.add_fields(self.params)
         slack_formater.add_divider()
 
@@ -233,11 +239,17 @@ class Formatter:
 
 
 if __name__ == '__main__':
-    title = sys.argv[1]
-    body = sys.argv[2]
-    github_params = sys.argv[3]
+    notification_title = sys.argv[1]
+    promotion_title = sys.argv[2]
+    body = sys.argv[3]
+    github_params = sys.argv[4]
 
-    fmt = Formatter(body=body, title=title, params=github_params)
+    fmt = Formatter(
+        promotion_title=promotion_title,
+        notification_title=notification_title,
+        body=body,
+        params=github_params
+    )
     body_content = fmt.to_slack_format()
 
     print(json.dumps(body_content["blocks"]))
