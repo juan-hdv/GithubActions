@@ -68,7 +68,7 @@ class SlackMessageFormater:
     def add_fields(self, fields: dict):
         field_list = []
         for key, v in fields.items():
-            value = f"<{v}|{key.upper()}>" if "url" in key else v
+            value = f"<{v}|{key}>" if "url" in key else v
             field_list.append({"type": "mrkdwn", "text": f"{key}: {value}"})
 
         fields_element = {"type": "section", "fields": field_list}
@@ -93,12 +93,12 @@ class Formatter:
         notification_title: str,
         promotion_title: str,
         body: str,
-        github_params: str
+        params: str
     ) -> None:
         self.body = body
         self.notification_title = notification_title
         self.promotion_title = promotion_title
-        self.params = json.loads(github_params.replace("'", '"'))
+        self.params = json.loads(params.replace("'", '"'))
         self.matched_pr_number = 0
         self.expected_pr_number = 0
 
@@ -201,7 +201,7 @@ class Formatter:
             return FormatterError.REPO_NAME_MISSING, [self.body]
 
         repo_name = match.group(1)
-        self.params["repo"] = f"NomadHealth/{repo_name}"
+        self.params["repo"] = f"NomadHealth/{repo_name.lower()}"
 
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
