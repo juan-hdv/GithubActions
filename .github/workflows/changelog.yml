@@ -15,7 +15,7 @@ jobs:
 # TO HERE
     runs-on: ubuntu-latest
     env:
-      TITLE: "Changelog notification for a Nomad software promotion"
+      NOTIFICATION_TITLE: "Changelog notification for a Nomad software promotion"
 
     steps:
     - name: PR Log title
@@ -31,11 +31,11 @@ jobs:
         # PR_SHA: ${{ github.event.pull_request.head.sha }}
         BODY: ${{ github.event.pull_request.body }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-        PROMOTION_TITLE: ${{ github.event.pull_request.title }}"
+        PROMOTION_TITLE: ${{ github.event.pull_request.title }}
       run: |
         PR_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$PR_NUMBER"
         GITHUB_PARAMS="{ 'actor': '$GITHUB_ACTOR', 'repo': '$GITHUB_REPOSITORY', 'ref': '$GITHUB_REF', 'pr_url': '$PR_URL' }"
-        python3 format_pr_body.py "${{ env.TITLE }}" "$PROMOTION_TITLE" "$BODY" "$GITHUB_PARAMS"> result.txt
+        python3 format_pr_body.py "${{ env.NOTIFICATION_TITLE }}" "$PROMOTION_TITLE" "$BODY" "$GITHUB_PARAMS"> result.txt
         PR_FORMATTED_BODY=$(cat result.txt)
         echo "PR_FORMATTED_BODY<<EOF" >> $GITHUB_ENV
         echo "$PR_FORMATTED_BODY" >> $GITHUB_ENV
