@@ -189,7 +189,7 @@ class Formatter:
 
     def process_parameters(self) -> dict:
         """ Particular formating for params """
-        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME})", self.params['promo_title']) # noqa #501
+        match = re.match(rf"Promote\s({self.PATTERN_REPO_NAME})", self.params.get('promo_title',"")) # noqa #501
         if not match:
             return FormatterError.REPO_NAME_MISSING, [self.body]
 
