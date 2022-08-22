@@ -89,10 +89,11 @@ class Formatter:
     PATTERN_GITHUB_URL = "\(https\:\/\/github\.com\/NomadHealth.+?\)" # noqa #605
 
     def __init__(
-        promotion_title: str,
+        self,
         notification_title: str,
-        self, body: str,
-        params: str
+        promotion_title: str,
+        body: str,
+        github_params: str
     ) -> None:
         self.body = body
         self.notification_title = notification_title
@@ -245,11 +246,12 @@ if __name__ == '__main__':
     github_params = sys.argv[4]
 
     fmt = Formatter(
-        promotion_title=promotion_title,
         notification_title=notification_title,
+        promotion_title=promotion_title,
         body=body,
         params=github_params
     )
+    body_content = fmt.to_slack_format()
     body_content = fmt.to_slack_format()
 
     print(json.dumps(body_content["blocks"]))
