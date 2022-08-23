@@ -28,7 +28,7 @@ class FormatterError(IntEnum):
     ROBOT_SIGN_MISSING = 320, "Format error :: Missing sign: robot: auto generated pull request"
     TITLE_MISSING = 340, "Format error :: Missing title: Missing # Changes"
     PATTERN_NOT_FOUND = 360, "Format error :: Pattern not found: - @user ... [GithubCode](GithubUrl)"
-    REPO_NAME_MISSING = 380, "Format error :: Repository name not found: - Promote <repo-name>"
+    REPO_NAME_MISSING = 380, "Format error :: Repository name not found in PR title: - Promote <repo-name>"
 
 
 class SlackMessageFormater:
@@ -80,7 +80,7 @@ class SlackMessageFormater:
 
 class Formatter:
     # https://confluence.atlassian.com/adminjiraserver/changing-the-project-key-format-938847081.html
-    PATTERN_REPO_NAME = "[a-z-/_]+"  # noqa #605
+    PATTERN_REPO_NAME = "[a-zA-Z-/_]+"  # noqa #605
     PATTERN_JIRA_CODE = "[a-zA-Z][a-zA-Z0-9_]+-[0-9]+"  # noqa #605
     URL_UNKNOWN = "http://unknown"
 
