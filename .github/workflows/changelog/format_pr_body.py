@@ -24,11 +24,11 @@ class FormatterError(IntEnum):
     NOT_ALL_PROCESSED = 100, "Warning :: Not all the PRs in the body matched the expected format"
 
     # Errors
-    EMPTY_BODY = 300, "Error :: Empty body: PR has an empty body"
-    ROBOT_SIGN_MISSING = 320, "Error :: Missing sign: robot: auto generated pull request"
-    TITLE_MISSING = 340, "Error :: Missing title: Missing # Changes"
-    PATTERN_NOT_FOUND = 360, "Error :: Pattern not found: - @user ... [GithubCode](GithubUrl)"
-    REPO_NAME_MISSING = 380, "Error :: Repository name not found: - Promote <repo-name>"
+    EMPTY_BODY = 300, "Format error :: Empty body: PR has an empty body"
+    ROBOT_SIGN_MISSING = 320, "Format error :: Missing sign: robot: auto generated pull request"
+    TITLE_MISSING = 340, "Format error :: Missing title: Missing # Changes"
+    PATTERN_NOT_FOUND = 360, "Format error :: Pattern not found: - @user ... [GithubCode](GithubUrl)"
+    REPO_NAME_MISSING = 380, "Format error :: Repository name not found: - Promote <repo-name>"
 
 
 class SlackMessageFormater:
@@ -199,29 +199,31 @@ class Formatter:
 
         return FormatterError.SUCCESS, result_string_list
 
-    def process_parameters(self) -> dict:
+    def process_parameters(self) -> FormatterError:
         """ Particular formating for params """
         match = re.match(
-            rf"^Promote\s({self.PATTERN_REPO_NAME})\s*.*$",
+            rf"\sPromote\s({self.PATTERN_REPO_NAME})\s*.*$",
             self.promotion_title,
             re.IGNORECASE
         )
         if not match:
-            return FormatterError.REPO_NAME_MISSING, [self.body]
+            return FormatterError.REPO_NAME_MISSING
 
         repo_name = match.group(1)
         self.params["repo"] = f"NomadHealth/{repo_name.lower()}"
 
+        return FormatterError.SUCCESS
+
     def to_slack_format(self) -> dict:
         slack_formater = SlackMessageFormater()
 
-        self.process_parameters()
+        parameters_error = self.process_parameters()
 
         slack_formater.add_text(f"*{self.notification_title}*")
         slack_formater.add_fields(self.params)
         slack_formater.add_divider()
 
-        error, pr_string_list = self._create_github_pr_string_list()
+        list_error, pr_string_list = self._create_github_pr_string_list()
 
         date_obj = datetime.now(timezone.utc)
         date_str = date_obj.strftime("%m/%d/%Y at %H:%M")
@@ -232,10 +234,12 @@ class Formatter:
         slack_formater.add_text(header)
 
         bottom_message = None
-        if error != FormatterError.SUCCESS:
-            bottom_message = f"[ {error.value} ] {error.description}"
+        if list_error != FormatterError.SUCCESS:
+            bottom_message = f"[ {list_error.value} ] {list_error.description}"
+        elif parameters_error != FormatterError.SUCCESS:
+            bottom_message = f"[ {parameters_error.value} ] {parameters_error.description}"
 
-        if error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
+        if list_error in [FormatterError.SUCCESS, FormatterError.NOT_ALL_PROCESSED]:
             slack_formater.add_list(pr_string_list)
         else:
             slack_formater.add_text(pr_string_list[0])
