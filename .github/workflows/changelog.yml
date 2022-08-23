@@ -47,7 +47,7 @@ jobs:
         BLOCKS: ${{ env.PR_FORMATTED_BODY }}
         # Title won't render if blocks is present but will show up in notifications
         # https://api.slack.com/messaging/attachments-to-blocks#fallback_text
-        TIT: ${{ env.TITLE }}
+        TIT: ${{ env.NOTIFICATION_TITLE }}
       run: |
           curl --location --request POST "${{ secrets.SLACK_WEBHOOK }}" \
           --header 'Content-type: application/json' \
