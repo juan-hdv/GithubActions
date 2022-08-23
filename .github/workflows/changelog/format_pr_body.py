@@ -202,15 +202,10 @@ class Formatter:
     def process_parameters(self) -> FormatterError:
         """ Particular formating for params """
         match = re.match(
-            r"\sPromote\s([a-zA-Z-/_]+)\s*",
+            rf"\sPromote\s({self.PATTERN_REPO_NAME})\s*",
             self.promotion_title,
             re.IGNORECASE
         )
-        print("***** title>", self.promotion_title)
-        print("***** Pattern>", self.PATTERN_REPO_NAME)
-        print("***** match>", match)
-        print("Match 0>", match.group(0))
-        print("Match 1>", match.group(1))
         if not match:
             return FormatterError.REPO_NAME_MISSING
 
