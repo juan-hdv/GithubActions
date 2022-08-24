@@ -200,9 +200,9 @@ class Formatter:
         return FormatterError.SUCCESS, result_string_list
 
     def process_parameters(self) -> FormatterError:
-        """ Particular formating for params """
+        """ Particular formating of params """
         match = re.match(
-            rf"\sPromote\s({self.PATTERN_REPO_NAME})\s*",
+            rf".*\s*Promote\s({self.PATTERN_REPO_NAME})",
             self.promotion_title,
             re.IGNORECASE
         )

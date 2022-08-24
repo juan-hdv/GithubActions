@@ -1,5 +1,5 @@
     notification_title = "Changelog notification for a Nomad software promotion"
-    promotion_title = "aaa Promote repository-albin 1 from 2"
+    promotion_title = "Promote nomad-web-app from Dev1 to Prod"
     github_params = """{
         'actor': 'juan-hdv',
         'repo': 'juan-hdv/GithubActions',
